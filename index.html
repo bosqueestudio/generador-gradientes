@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GradX Anim v2</title>
+    <title>GradX Anim Pro</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
@@ -16,56 +16,73 @@
             --posY: 50%;
             --stop2: 33%;
             --stop3: 66%;
+            --blurAmount: 0px;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
         body { display: flex; min-height: 100vh; background-color: #0f172a; color: #f8fafc; }
-        .controls-panel { width: 350px; min-width: 310px; background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(10px); padding: 20px; box-shadow: 5px 0 25px rgba(0,0,0,0.3); z-index: 10; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; }
-        h2 { font-size: 1.4rem; text-align: center; border-bottom: 2px solid #334155; padding-bottom: 10px; }
-        .section-title { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; margin-bottom: 8px; }
-        .color-pickers { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .color-box { display: flex; flex-direction: column; gap: 5px; }
-        .color-box label { font-size: 0.8rem; }
+        
+        /* Panel de Control */
+        .controls-panel { width: 350px; min-width: 310px; background: rgba(30, 41, 59, 0.9); backdrop-filter: blur(10px); padding: 20px; box-shadow: 5px 0 25px rgba(0,0,0,0.3); z-index: 10; display: flex; flex-direction: column; gap: 18px; overflow-y: auto; height: 100vh; }
+        h2 { font-size: 1.4rem; text-align: center; border-bottom: 2px solid #334155; padding-bottom: 10px; color: #00f0ff; }
+        .section-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; margin-bottom: 6px; display: flex; justify-content: space-between; }
+        .section-title span { color: #00f0ff; font-family: monospace; }
+        
+        /* Layouts de controles */
+        .color-pickers { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .color-box { display: flex; flex-direction: column; gap: 3px; }
+        .color-box label { font-size: 0.75rem; }
         .color-row { display: flex; gap: 5px; }
-        input[type="color"] { -webkit-appearance: none; border: none; width: 35px; height: 35px; border-radius: 8px; cursor: pointer; background: none; }
-        input[type="color"]::-webkit-color-swatch { border: 1px solid #475569; border-radius: 8px; }
-        input[type="text"], #angleInput { width: 100%; background: #334155; border: 1px solid #475569; color: #fff; padding: 5px 10px; border-radius: 8px; font-family: monospace; text-transform: uppercase; text-align: center; }
-        .input-container { display: flex; align-items: center; position: relative; }
-        .unit-label { position: absolute; right: 10px; font-size: 0.8rem; color: #64748b; }
-        .radio-group { display: flex; gap: 10px; }
+        input[type="color"] { -webkit-appearance: none; border: none; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; background: none; }
+        input[type="color"]::-webkit-color-swatch { border: 1px solid #475569; border-radius: 6px; }
+        input[type="text"], #angleInput { width: 100%; background: #232f42; border: 1px solid #475569; color: #fff; padding: 4px 8px; border-radius: 6px; font-family: monospace; text-transform: uppercase; text-align: center; font-size: 0.85rem; }
+        
+        .radio-group { display: flex; gap: 8px; }
         .spec-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
-        .radio-label { display: flex; align-items: center; gap: 5px; cursor: pointer; background: #334155; padding: 8px 10px; border-radius: 8px; flex: 1; justify-content: center; transition: background 0.3s; font-size: 0.9rem; }
+        .radio-label { display: flex; align-items: center; gap: 4px; cursor: pointer; background: #334155; padding: 6px 8px; border-radius: 6px; flex: 1; justify-content: center; transition: background 0.2s; font-size: 0.85rem; }
         .radio-label:hover { background: #475569; }
         .radio-label input { display: none; }
         .radio-label input:checked + span { color: #00f0ff; font-weight: bold; }
         .radio-label.active { border: 1px solid #00f0ff; background: #1e293b; }
-        input[type="range"] { accent-color: #00f0ff; cursor: pointer; }
-        .btn-animate, .btn-download { color: white; border: none; padding: 10px; border-radius: 8px; font-size: 0.95rem; font-weight: bold; cursor: pointer; transition: transform 0.2s, opacity 0.2s; width: 100%; margin-bottom: 8px; }
+        
+        input[type="range"] { accent-color: #00f0ff; cursor: pointer; width: 100%; }
+        .btn-animate, .btn-download { color: white; border: none; padding: 10px; border-radius: 8px; font-size: 0.95rem; font-weight: bold; cursor: pointer; transition: transform 0.2s; width: 100%; margin-bottom: 6px; }
         .btn-animate { background: linear-gradient(135deg, #00f0ff, #7f00ff); }
         .btn-animate.active { background: linear-gradient(135deg, #ff007f, #ffaa00); }
         .btn-download { background: linear-gradient(135deg, #22c55e, #15803d); }
-        .btn-animate:hover, .btn-download:hover { transform: translateY(-2px); opacity: 0.9; }
-        .visualizer-container { flex: 1; display: flex; align-items: center; justify-content: center; background-color: #020617; padding: 20px; }
-        .visualizer { position: relative; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); border-radius: 12px; max-width: 100%; max-height: 90vh; transition: width 0.4s ease, height 0.4s ease; }
+        .btn-animate:hover, .btn-download:hover { transform: translateY(-2px); }
+        
+        /* Contenedor del Visor */
+        .visualizer-container { flex: 1; display: flex; align-items: center; justify-content: center; background-color: #020617; padding: 20px; overflow: hidden; position: relative; }
+        
+        /* Marco del Visualizador */
+        .visualizer { position: relative; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); border-radius: 12px; max-width: 100%; max-height: 90vh; transition: width 0.4s, height 0.4s; overflow: hidden; cursor: crosshair; }
         .ratio-16-9 { width: 100%; max-width: 800px; aspect-ratio: 16 / 9; }
         .ratio-3-4 { height: 100%; max-height: 550px; aspect-ratio: 3 / 4; }
         .ratio-9-16 { height: 100%; max-height: 600px; aspect-ratio: 9 / 16; }
-        .linear-gradient { background: linear-gradient(var(--angle), var(--color1) 0%, var(--color2) var(--stop2), var(--color3) var(--stop3), var(--color4) 100%); }
-        .radial-gradient { background: radial-gradient(circle at var(--posX) var(--posY), var(--color1) 0%, var(--color2) var(--stop2), var(--color3) var(--stop3), var(--color4) 100%); }
-        .code-output { position: absolute; bottom: 15px; right: 15px; background: rgba(15, 23, 42, 0.85); padding: 12px; border-radius: 8px; max-width: 90%; font-family: monospace; font-size: 0.75rem; border: 1px solid #334155; pointer-events: none; word-break: break-all; }
+
+        /* Capas internas para soportar el efecto Eco y Blur */
+        .blur-layer { width: 100%; height: 100%; filter: blur(var(--blurAmount)); position: relative; }
+        .canvas-bg { position: absolute; top:0; left:0; width:100%; height:100%; }
+
+        .code-output { position: absolute; bottom: 15px; right: 15px; background: rgba(15, 23, 42, 0.85); padding: 12px; border-radius: 8px; max-width: 90%; font-family: monospace; font-size: 0.75rem; border: 1px solid #334155; pointer-events: none; word-break: break-all; z-index: 5; }
     </style>
 </head>
 <body>
     <div class="controls-panel">
-        <h2>GradX Anim v2</h2>
+        <h2>GradX Pro</h2>
+        
+        <!-- COLORES -->
         <div>
             <div class="section-title">Colores (Hex)</div>
             <div class="color-pickers">
-                <div class="color-box"><label>Color 1</label><div class="color-row"><input type="color" id="picker1" value="#ff007f"><input type="text" id="hex1" value="#ff007f" maxlength="7"></div></div>
-                <div class="color-box"><label>Color 2</label><div class="color-row"><input type="color" id="picker2" value="#7f00ff"><input type="text" id="hex2" value="#7f00ff" maxlength="7"></div></div>
-                <div class="color-box"><label>Color 3</label><div class="color-row"><input type="color" id="picker3" value="#00f0ff"><input type="text" id="hex3" value="#00f0ff" maxlength="7"></div></div>
-                <div class="color-box"><label>Color 4</label><div class="color-row"><input type="color" id="picker4" value="#ffaa00"><input type="text" id="hex4" value="#ffaa00" maxlength="7"></div></div>
+                <div class="color-box"><label>C1</label><div class="color-row"><input type="color" id="picker1" value="#ff007f"><input type="text" id="hex1" value="#ff007f" maxlength="7"></div></div>
+                <div class="color-box"><label>C2</label><div class="color-row"><input type="color" id="picker2" value="#7f00ff"><input type="text" id="hex2" value="#7f00ff" maxlength="7"></div></div>
+                <div class="color-box"><label>C3</label><div class="color-row"><input type="color" id="picker3" value="#00f0ff"><input type="text" id="hex3" value="#00f0ff" maxlength="7"></div></div>
+                <div class="color-box"><label>C4</label><div class="color-row"><input type="color" id="picker4" value="#ffaa00"><input type="text" id="hex4" value="#ffaa00" maxlength="7"></div></div>
             </div>
         </div>
+
+        <!-- TIPO -->
         <div>
             <div class="section-title">Tipo de Gradiente</div>
             <div class="radio-group">
@@ -73,135 +90,320 @@
                 <label class="radio-label" id="lbl-radial"><input type="radio" name="gtype" value="radial"><span>Radial</span></label>
             </div>
         </div>
+
+        <!-- ÁNGULO -->
         <div id="angle-control-group">
-            <div class="section-title">Ángulo del Gradiente</div>
-            <div class="input-container"><input type="text" id="angleInput" value="0"><span class="unit-label">°deg</span></div>
+            <div class="section-title">Ángulo Manual</div>
+            <input type="text" id="angleInput" value="0">
         </div>
+
+        <!-- FUSIÓN -->
         <div>
-            <div class="section-title">Fusión de Colores: <span id="blendValue">0%</span></div>
-            <input type="range" id="blendSlider" min="0" max="50" step="10" value="0" style="width: 100%;">
+            <div class="section-title">Fusión: <span id="blendValue">0%</span></div>
+            <input type="range" id="blendSlider" min="0" max="50" step="10" value="0">
         </div>
+
+        <!-- BLUR NUEVO -->
         <div>
-            <div class="section-title">Aspect Ratio</div>
+            <div class="section-title">Efecto Desenfoque (Blur): <span id="blurValue">0px</span></div>
+            <input type="range" id="blurSlider" min="0" max="100" step="10" value="0">
+        </div>
+
+        <!-- NUEVOS PARAMETROS ANIMACIÓN -->
+        <div>
+            <div class="section-title">Fluidez (Ease): <span id="easeValue">Suave</span></div>
+            <input type="range" id="easeSlider" min="1" max="20" step="1" value="5">
+        </div>
+
+        <div>
+            <div class="section-title">Efecto Eco (Estela Centro)</div>
+            <input type="range" id="echoSlider" min="0" max="95" step="5" value="0">
+        </div>
+
+        <!-- ASPECT RATIO -->
+        <div>
+            <div class="section-title">Tamaño (Aspect Ratio)</div>
             <div class="radio-group spec-grid">
                 <label class="radio-label active" id="lbl-16-9"><input type="radio" name="aspectRatio" value="16-9" checked><span>16:9</span></label>
                 <label class="radio-label" id="lbl-3-4"><input type="radio" name="aspectRatio" value="3-4"><span>3:4</span></label>
                 <label class="radio-label" id="lbl-9-16"><input type="radio" name="aspectRatio" value="9-16"><span>9:16</span></label>
             </div>
         </div>
+
+        <!-- ACCIONES -->
         <div>
-            <div class="section-title">Acciones</div>
             <button class="btn-animate" id="btnAnimate">Iniciar Animación</button>
             <button class="btn-download" id="btnDownload">Descargar PNG</button>
         </div>
     </div>
+
     <div class="visualizer-container">
-        <div class="visualizer linear-gradient ratio-16-9" id="visualizer">
-            <div class="code-output" id="codeOutput">background: linear-gradient(0deg, #ff007f, #7f00ff, #00f0ff, #ffaa00);</div>
+        <div class="visualizer ratio-16-9" id="visualizer">
+            <div class="blur-layer" id="blurLayer">
+                <!-- Usamos Canvas para permitir el renderizado de estelas (Eco) fluido -->
+                <canvas id="gradientCanvas" class="canvas-bg"></canvas>
+            </div>
+            <div class="code-output" id="codeOutput">Cargando código...</div>
         </div>
     </div>
+
     <script>
         const visualizer = document.getElementById('visualizer');
+        const blurLayer = document.getElementById('blurLayer');
+        const canvas = document.getElementById('gradientCanvas');
+        const ctx = canvas.getContext('2d');
         const codeOutput = document.getElementById('codeOutput');
+        
         const btnAnimate = document.getElementById('btnAnimate');
         const btnDownload = document.getElementById('btnDownload');
         const angleInput = document.getElementById('angleInput');
         const angleControlGroup = document.getElementById('angle-control-group');
+        
         const blendSlider = document.getElementById('blendSlider');
         const blendValue = document.getElementById('blendValue');
+        const blurSlider = document.getElementById('blurSlider');
+        const blurValue = document.getElementById('blurValue');
+        const easeSlider = document.getElementById('easeSlider');
+        const easeValue = document.getElementById('easeValue');
+        const echoSlider = document.getElementById('echoSlider');
+
         const pickers = [1, 2, 3, 4].map(i => document.getElementById(`picker${i}`));
         const hexInputs = [1, 2, 3, 4].map(i => document.getElementById(`hex${i}`));
         const radiosGtype = document.getElementsByName('gtype');
         const radiosRatio = document.getElementsByName('aspectRatio');
+
         let isAnimating = false;
-        calculateStops(0);
+        let stop2 = 33, stop3 = 66;
+        let easeFactor = 0.05; // Controlado por el slider de fluidez
+        let echoAmount = 0;   // Opacidad acumulada para el eco
+
+        // Coordenadas actuales y objetivos
+        let currentAngle = 0, targetAngle = 0;
+        let currentX = 50, targetX = 50;
+        let currentY = 50, targetY = 50;
+
+        // Redimensionar Canvas internamente para evitar pixeles borrosos
+        function resizeCanvas() {
+            canvas.width = visualizer.clientWidth;
+            canvas.height = visualizer.clientHeight;
+            drawGradient();
+        }
+        window.addEventListener('resize', resizeCanvas);
+        new ResizeObserver(resizeCanvas).observe(visualizer);
+
+        // Dibujar el Gradiente en el Canvas
+        function drawGradient() {
+            if (canvas.width === 0 || canvas.height === 0) return;
+
+            // EFECTO ECO CENTRO HACIA AFUERA:
+            // En lugar de borrar todo el lienzo por completo, dibujamos una capa casi transparente encima
+            // Si el slider de eco es 0, borra por completo de forma normal.
+            if (echoAmount > 0 && isAnimating) {
+                ctx.fillStyle = `rgba(15, 23, 42, ${1 - echoAmount})`; // Color de fondo base de la app
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+
+            const type = document.querySelector('input[name="gtype"]:checked').value;
+            const c1 = hexInputs[0].value;
+            const c2 = hexInputs[1].value;
+            const c3 = hexInputs[2].value;
+            const c4 = hexInputs[3].value;
+
+            let grad;
+
+            if (type === 'linear') {
+                // Convertir ángulo a coordenadas de vectores de Canvas
+                let angleRad = (currentAngle * Math.PI) / 180;
+                let r = Math.sqrt(canvas.width**2 + canvas.height**2) / 2;
+                let cx = canvas.width / 2;
+                let cy = canvas.height / 2;
+                
+                let x0 = cx - r * Math.cos(angleRad);
+                let y0 = cy - r * Math.sin(angleRad);
+                let x1 = cx + r * Math.cos(angleRad);
+                let y1 = cy + r * Math.sin(angleRad);
+
+                grad = ctx.createLinearGradient(x0, y0, x1, y1);
+            } else {
+                // Radial: Origen calculado dinámicamente en px
+                let px = (currentX / 100) * canvas.width;
+                let py = (currentY / 100) * canvas.height;
+                let rMax = Math.max(canvas.width, canvas.height);
+
+                grad = ctx.createRadialGradient(px, py, 0, px, py, rMax);
+            }
+
+            grad.addColorStop(0, c1);
+            grad.addColorStop(stop2 / 100, c2);
+            grad.addColorStop(stop3 / 100, c3);
+            grad.addColorStop(1, c4);
+
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            updateOutputText();
+        }
+
+        // CLIC EN EL GRADIENTE: Guarda y fija el nuevo centro en Coordenadas X / Y
+        visualizer.addEventListener('click', (e) => {
+            const rect = visualizer.getBoundingClientRect();
+            let clickX = ((e.clientX - rect.left) / rect.width) * 100;
+            let clickY = ((e.clientY - rect.top) / rect.height) * 100;
+
+            // Si está animando, redefine el objetivo; si está quieto, lo cambia de inmediato
+            targetX = clickX;
+            targetY = clickY;
+            if (!isAnimating) {
+                currentX = clickX;
+                currentY = clickY;
+                drawGradient();
+            }
+        });
+
+        // Sincronizar selectores de colores
         pickers.forEach((picker, index) => {
             picker.addEventListener('input', (e) => {
-                let color = e.target.value; hexInputs[index].value = color;
-                document.documentElement.style.setProperty(`--color${index + 1}`, color); updateOutputText();
+                hexInputs[index].value = e.target.value;
+                drawGradient();
             });
         });
         hexInputs.forEach((input, index) => {
             input.addEventListener('input', (e) => {
-                let color = e.target.value;
-                if(/^#[0-9A-F]{6}$/i.test(color)) {
-                    pickers[index].value = color; document.documentElement.style.setProperty(`--color${index + 1}`, color); updateOutputText();
+                if(/^#[0-9A-F]{6}$/i.test(e.target.value)) {
+                    pickers[index].value = e.target.value;
+                    drawGradient();
                 }
             });
         });
+
+        // Sliders nuevos y viejos
+        blendSlider.addEventListener('input', (e) => {
+            let val = parseInt(e.target.value);
+            blendValue.textContent = `${val}%`;
+            stop2 = 33 + (val * 0.33); 
+            stop3 = 66 - (val * 0.33);
+            drawGradient();
+        });
+
+        blurSlider.addEventListener('input', (e) => {
+            let val = e.target.value;
+            blurValue.textContent = `${val}px`;
+            blurLayer.style.setProperty('--blurAmount', `${val}px`);
+        });
+
+        easeSlider.addEventListener('input', (e) => {
+            let val = parseInt(e.target.value);
+            // Convertimos el valor en una escala lerp (Menor número = más pesado/torpe, Mayor = instantáneo/reactivo)
+            easeFactor = (21 - val) * 0.01;
+            
+            if (val <= 6) easeValue.textContent = "Pesado (Torpe)";
+            else if (val <= 14) easeValue.textContent = "Suave (Fluido)";
+            else easeValue.textContent = "Reactivo (Rápido)";
+        });
+
+        echoSlider.addEventListener('input', (e) => {
+            echoAmount = parseInt(e.target.value) / 100;
+        });
+
         radiosGtype.forEach(radio => {
             radio.addEventListener('change', (e) => {
                 document.getElementById('lbl-linear').classList.toggle('active', e.target.value === 'linear');
                 document.getElementById('lbl-radial').classList.toggle('active', e.target.value === 'radial');
-                if (e.target.value === 'linear') {
-                    visualizer.classList.remove('radial-gradient'); visualizer.classList.add('linear-gradient'); angleControlGroup.style.display = 'block';
-                } else {
-                    visualizer.classList.remove('linear-gradient'); visualizer.classList.add('radial-gradient'); angleControlGroup.style.display = 'none';
-                }
-                updateOutputText();
+                angleControlGroup.style.display = (e.target.value === 'linear') ? 'block' : 'none';
+                drawGradient();
             });
         });
+
         angleInput.addEventListener('input', (e) => {
             if(!isAnimating) {
-                let value = parseInt(e.target.value) || 0; document.documentElement.style.setProperty('--angle', `${value}deg`); updateOutputText();
+                currentAngle = parseInt(e.target.value) || 0;
+                drawGradient();
             }
         });
-        blendSlider.addEventListener('input', (e) => {
-            let val = parseInt(e.target.value); blendValue.textContent = `${val}%`; calculateStops(val); updateOutputText();
-        });
-        function calculateStops(blendFactor) {
-            let stop2 = 33 + (blendFactor * 0.33); let stop3 = 66 - (blendFactor * 0.33);
-            document.documentElement.style.setProperty('--stop2', `${stop2}%`); document.documentElement.style.setProperty('--stop3', `${stop3}%`);
-        }
+
         radiosRatio.forEach(radio => {
             radio.addEventListener('change', (e) => {
                 visualizer.classList.remove('ratio-16-9', 'ratio-3-4', 'ratio-9-16');
-                document.getElementById('lbl-16-9').classList.remove('active'); document.getElementById('lbl-3-4').classList.remove('active'); document.getElementById('lbl-9-16').classList.remove('active');
-                document.getElementById(`lbl-${e.target.value}`).classList.add('active'); visualizer.classList.add(`ratio-${e.target.value}`);
+                document.getElementById('lbl-16-9').classList.remove('active');
+                document.getElementById('lbl-3-4').classList.remove('active');
+                document.getElementById('lbl-9-16').classList.remove('active');
+                document.getElementById(`lbl-${e.target.value}`).classList.add('active');
+                visualizer.classList.add(`ratio-${e.target.value}`);
+                setTimeout(resizeCanvas, 50);
             });
         });
+
         function updateOutputText() {
             const type = document.querySelector('input[name="gtype"]:checked').value;
             const c1 = hexInputs[0].value; const c2 = hexInputs[1].value; const c3 = hexInputs[2].value; const c4 = hexInputs[3].value;
-            const s2 = getComputedStyle(document.documentElement).getPropertyValue('--stop2').trim(); const s3 = getComputedStyle(document.documentElement).getPropertyValue('--stop3').trim();
+            const blurStr = blurSlider.value > 0 ? ` filter: blur(${blurSlider.value}px);` : '';
+
             if (type === 'linear') {
-                const angle = getComputedStyle(document.documentElement).getPropertyValue('--angle').trim();
-                codeOutput.textContent = `background: linear-gradient(${angle}, ${c1} 0%, ${c2} ${s2}, ${c3} ${s3}, ${c4} 100%);`;
+                codeOutput.textContent = `background: linear-gradient(${Math.round(currentAngle)}deg, ${c1} 0%, ${c2} ${Math.round(stop2)}%, ${c3} ${Math.round(stop3)}%, ${c4} 100%);${blurStr}`;
             } else {
-                const posX = getComputedStyle(document.documentElement).getPropertyValue('--posX').trim(); const posY = getComputedStyle(document.documentElement).getPropertyValue('--posY').trim();
-                codeOutput.textContent = `background: radial-gradient(circle at ${posX} ${posY}, ${c1} 0%, ${c2} ${s2}, ${c3} ${s3}, ${c4} 100%);`;
+                codeOutput.textContent = `background: radial-gradient(circle at ${Math.round(currentX)}% ${Math.round(currentY)}%, ${c1} 0%, ${c2} ${Math.round(stop2)}%, ${c3} ${Math.round(stop3)}%, ${c4} 100%);${blurStr}`;
             }
         }
-        let currentAngle = 0; let currentX = 50; let currentY = 50; let targetAngle = 0; let targetX = 50; let targetY = 50;
+
+        // Bucle de Animación Avanzada (Interpolación configurable)
         function animate() {
             if (!isAnimating) return;
-            currentAngle += (targetAngle - currentAngle) * 0.05; currentX += (targetX - currentX) * 0.05; currentY += (targetY - currentY) * 0.05;
+
+            // Interpolación suavizada usando la variable de Fluidez (easeFactor)
+            currentAngle += (targetAngle - currentAngle) * easeFactor;
+            currentX += (targetX - currentX) * easeFactor;
+            currentY += (targetY - currentY) * easeFactor;
+
             const type = document.querySelector('input[name="gtype"]:checked').value;
             if (type === 'linear') {
-                document.documentElement.style.setProperty('--angle', `${Math.round(currentAngle)}deg`); angleInput.value = Math.round(currentAngle);
-            } else {
-                document.documentElement.style.setProperty('--posX', `${Math.round(currentX)}%`); document.documentElement.style.setProperty('--posY', `${Math.round(currentY)}%`);
+                angleInput.value = Math.round(currentAngle);
             }
-            updateOutputText();
-            if (Math.abs(targetAngle - currentAngle) < 1 && Math.abs(targetX - currentX) < 1) { pickNewTargets(); }
+
+            drawGradient();
+
+            // Si está muy cerca del objetivo aleatorio, selecciona uno nuevo
+            if (Math.abs(targetAngle - currentAngle) < 1.5 && Math.abs(targetX - currentX) < 1.5) {
+                pickNewTargets();
+            }
+
             requestAnimationFrame(animate);
         }
-        function pickNewTargets() { targetAngle = Math.random() * 360; targetX = Math.random() * 100; targetY = Math.random() * 100; }
+
+        function pickNewTargets() {
+            targetAngle = Math.random() * 360;
+            targetX = Math.random() * 100;
+            targetY = Math.random() * 100;
+        }
+
         btnAnimate.addEventListener('click', () => {
             isAnimating = !isAnimating;
             if (isAnimating) {
-                btnAnimate.textContent = "Detener Animación"; btnAnimate.classList.add('active'); pickNewTargets(); animate();
+                btnAnimate.textContent = "Detener Animación";
+                btnAnimate.classList.add('active');
+                pickNewTargets();
+                animate();
             } else {
-                btnAnimate.textContent = "Iniciar Animación"; btnAnimate.classList.remove('active');
+                btnAnimate.textContent = "Iniciar Animación";
+                btnAnimate.classList.remove('active');
+                drawGradient(); // Redibuja limpio al detener
             }
         });
+
+        // Descarga PNG limpia
         btnDownload.addEventListener('click', () => {
             codeOutput.style.display = 'none';
-            html2canvas(visualizer, { useCORS: true, logging: false, width: visualizer.offsetWidth, height: visualizer.offsetHeight }).then(canvas => {
-                const link = document.createElement('a'); link.download = `gradiente-${document.querySelector('input[name="aspectRatio"]:checked').value}.png`;
-                link.href = canvas.toDataURL('image/png'); link.click(); codeOutput.style.display = 'block';
+            html2canvas(visualizer, { useCORS: true, logging: false }).then(canvasTarget => {
+                const link = document.createElement('a');
+                link.download = `gradiente-pro-${document.querySelector('input[name="aspectRatio"]:checked').value}.png`;
+                link.href = canvasTarget.toDataURL('image/png');
+                link.click();
+                codeOutput.style.display = 'block';
             });
         });
+
+        // Inicializar canvas al cargar por primera vez
+        setTimeout(resizeCanvas, 100);
     </script>
 </body>
 </html>
