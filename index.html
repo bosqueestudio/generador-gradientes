@@ -21,15 +21,13 @@
             --stop3: 66%;
             --blurAmount: 0px;
             
-            /* Paleta basada exactamente en la referencia visual */
             --bg-darkest: #0b0c0e;
             --bg-panel: #121418;
             --bg-input: #1a1d24;
             --border-gray: #222731;
             --text-main: #e2e8f0;
             --text-muted: #64748b;
-            --neon-green: #89ff00; /* Verde neón estilizado como el de la referencia */
-            --neon-green-dim: #1e3a00;
+            --neon-green: #89ff00; 
         }
 
         * { 
@@ -41,104 +39,96 @@
         
         body { 
             display: flex; 
-            min-height: 100vh; 
+            height: 100vh; 
             background-color: var(--bg-darkest); 
             color: var(--text-main); 
+            overflow: hidden;
         }
         
-        /* Panel de Control - Look & Feel de la Imagen de Referencia */
+        /* Panel Izquierdo Compactado y sin Scroll */
         .controls-panel { 
-            width: 350px; 
-            min-width: 320px; 
+            width: 330px; 
+            min-width: 310px; 
             background: var(--bg-panel); 
             border-right: 1px solid var(--border-gray); 
-            padding: 24px; 
+            padding: 16px; 
             display: flex; 
             flex-direction: column; 
-            gap: 20px; 
-            overflow-y: auto; 
+            gap: 12px; 
             height: 100vh; 
+            overflow: hidden; /* Forzamos a que no exista scroll */
+            justify-content: space-between;
         }
         
         h2 { 
-            font-size: 1.15rem; 
+            font-size: 1.05rem; 
             text-align: center; 
             border-bottom: 1px solid var(--border-gray); 
-            padding-bottom: 16px; 
+            padding-bottom: 10px; 
             color: #fff; 
-            letter-spacing: -0.5px; 
             font-weight: 700; 
         }
         
-        /* Secciones Divididas de la UI Minimalistas */
         .ui-section { 
             border: 1px solid var(--border-gray); 
-            padding: 16px; 
-            border-radius: 16px; 
+            padding: 10px 12px; 
+            border-radius: 12px; 
             background: rgba(255,255,255,0.01); 
         }
         
+        /* Encabezados de sección en negrita */
         .section-header { 
             font-size: 0.72rem; 
-            text-transform: none; /* No usar mayúsculas sostenidas */
-            letter-spacing: 0.3px; 
-            color: var(--text-muted); 
-            margin-bottom: 14px; 
-            font-weight: 600; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-        }
-        
-        .section-header span { 
-            color: var(--neon-green); 
-            font-family: 'Open Sans', sans-serif; 
-            font-weight: 700;
+            color: var(--text-main); 
+            margin-bottom: 8px; 
+            font-weight: 700; 
         }
 
+        /* Subtítulos internos en peso normal */
         .section-title { 
-            font-size: 0.72rem; 
+            font-size: 0.68rem; 
             color: var(--text-muted); 
-            margin-bottom: 8px; 
+            margin-bottom: 4px; 
             display: flex; 
             justify-content: space-between; 
-            font-weight: 600;
+            font-weight: 400; /* Normal, sin negritas */
         }
         
         .section-title span { 
             color: var(--neon-green); 
+            font-weight: 600;
         }
 
-        /* Controles de Color Compactos */
         .color-pickers { 
             display: grid; 
             grid-template-columns: repeat(2, 1fr); 
-            gap: 12px; 
+            gap: 8px; 
         }
         
         .color-box { 
             display: flex; 
             flex-direction: column; 
-            gap: 4px; 
+            gap: 2px; 
         }
         
+        /* Etiquetas internas en peso normal */
         .color-box label { 
-            font-size: 0.68rem; 
+            font-size: 0.65rem; 
             color: var(--text-muted); 
-            font-weight: 600;
+            font-weight: 400; /* Normal, sin negritas */
         }
         
         .color-row { 
             display: flex; 
-            gap: 6px; 
+            gap: 4px; 
         }
         
         input[type="color"] { 
             -webkit-appearance: none; 
             border: none; 
-            width: 30px; 
-            height: 30px; 
-            border-radius: 50%; /* Completamente redondos los pickers */
+            width: 26px; 
+            height: 26px; 
+            border-radius: 50%; 
             cursor: pointer; 
             background: none; 
         }
@@ -153,23 +143,16 @@
             background: var(--bg-input); 
             border: 1px solid var(--border-gray); 
             color: #fff; 
-            padding: 6px 10px; 
-            border-radius: 20px; /* Bordes de inputs redondeados estilo píldora */
-            font-size: 0.72rem; 
+            padding: 4px 8px; 
+            border-radius: 20px; 
+            font-size: 0.68rem; 
             text-align: center; 
-            font-weight: 600;
-            transition: border-color 0.2s; 
+            font-weight: 400;
         }
         
-        input[type="text"]:focus, #angleInput:focus { 
-            border-color: var(--text-muted); 
-            outline: none; 
-        }
-        
-        /* Elementos de Selección Tipo Radio Completamente Redondeados */
         .radio-group { 
             display: flex; 
-            gap: 8px; 
+            gap: 6px; 
         }
         
         .spec-grid { 
@@ -180,36 +163,27 @@
         .blur-grid { 
             display: grid; 
             grid-template-columns: repeat(2, 1fr); 
-            gap: 8px; 
+            gap: 4px; 
         }
         
         .radio-label { 
             display: flex; 
             align-items: center; 
-            gap: 4px; 
+            gap: 2px; 
             cursor: pointer; 
             background: var(--bg-input); 
             border: 1px solid var(--border-gray); 
-            padding: 8px 12px; 
-            border-radius: 30px; /* Completamente redondeados */
+            padding: 5px 6px; 
+            border-radius: 30px; 
             flex: 1; 
             justify-content: center; 
-            transition: all 0.2s; 
-            font-size: 0.72rem; 
+            font-size: 0.68rem; 
             color: var(--text-main); 
-            font-weight: 600;
-        }
-        
-        .radio-label:hover { 
-            background: var(--border-gray); 
+            font-weight: 400; /* Texto normal en opciones deseleccionadas */
         }
         
         .radio-label input { 
             display: none; 
-        }
-        
-        .radio-label input:checked + span { 
-            color: #000; 
         }
         
         .radio-label.active { 
@@ -218,87 +192,82 @@
             color: #000;
         }
         
-        /* Sliders Estilizados Modernos */
+        .radio-label.active span {
+            font-weight: 700; /* Solo resalta si está activo */
+        }
+        
         input[type="range"] { 
             accent-color: var(--neon-green); 
             cursor: pointer; 
             width: 100%; 
             background: var(--bg-input); 
-            height: 4px; 
-            border-radius: 2px; 
+            height: 3px; 
         }
         
-        /* Botones Completamente Redondeados (Rectángulos con Bordes Ovalados) */
         .btn { 
             color: #000; 
             border: none; 
-            padding: 12px 20px; 
-            border-radius: 40px; /* Totalmente redondeados */
-            font-size: 0.75rem; 
+            padding: 10px 16px; 
+            border-radius: 40px; 
+            font-size: 0.72rem; 
             font-weight: 700; 
             cursor: pointer; 
             transition: all 0.2s; 
             width: 100%; 
-            margin-bottom: 8px; 
-            letter-spacing: -0.1px; 
         }
         
         .btn-neon { 
             background: var(--neon-green); 
-            box-shadow: 0 4px 12px rgba(137, 255, 0, 0.15); 
+            box-shadow: 0 4px 10px rgba(137, 255, 0, 0.1); 
         }
         
         .btn-neon:hover { 
             background: #7ae600; 
-            transform: translateY(-1px); 
         }
         
         .btn-sec { 
             background: var(--bg-input); 
             border: 1px solid var(--border-gray); 
             color: var(--text-main); 
+            margin-bottom: 6px;
         }
         
         .btn-sec:hover { 
             background: var(--border-gray); 
-            color: #fff; 
         }
         
         .btn-animate.active { 
             background: #ef4444; 
             color: #fff; 
             border-color: #ef4444;
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); 
         }
         
         .btn-lucky { 
             background: var(--bg-input); 
             border: 1px solid var(--border-gray); 
             color: var(--neon-green); 
-        }
-        
-        .btn-lucky:hover { 
-            background: var(--border-gray);
-            border-color: var(--neon-green);
+            padding: 8px 12px;
         }
 
-        /* Contenedor del Visor */
+        /* Contenedor Derecho con Patrón de Puntos de Ingeniería (Dot Grid) */
         .visualizer-container { 
             flex: 1; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             background-color: var(--bg-darkest); 
+            /* Grid de puntos */
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 16px 16px;
             padding: 24px; 
             overflow: hidden; 
             position: relative; 
         }
         
-        /* Marco del Visualizador */
         .visualizer { 
             position: relative; 
             box-shadow: 0 40px 80px rgba(0,0,0,0.6); 
-            border-radius: 24px; /* Bordes muy suaves como los smartphones de la imagen */
+            border-radius: 24px; 
             max-width: 100%; 
             max-height: 90vh; 
             transition: width 0.4s, height 0.4s; 
@@ -307,29 +276,30 @@
             border: 1px solid var(--border-gray); 
         }
         
-        .ratio-16-9 { width: 100%; max-width: 800px; aspect-ratio: 16 / 9; }
-        .ratio-3-4 { height: 100%; max-height: 550px; aspect-ratio: 3 / 4; }
-        .ratio-9-16 { height: 100%; max-height: 600px; aspect-ratio: 9 / 16; }
+        .ratio-16-9 { width: 100%; max-width: 760px; aspect-ratio: 16 / 9; }
+        .ratio-3-4 { height: 100%; max-height: 520px; aspect-ratio: 3 / 4; }
+        .ratio-9-16 { height: 100%; max-height: 560px; aspect-ratio: 9 / 16; }
 
-        /* Capas de Efectos */
         .blur-layer { width: 100%; height: 100%; position: relative; }
         .canvas-bg { position: absolute; top:0; left:0; width:100%; height:100%; }
 
+        /* Información Técnica muy discreta en la esquina inferior derecha */
         .code-output { 
             position: absolute; 
-            bottom: 20px; 
-            right: 20px; 
-            background: rgba(11, 12, 14, 0.9); 
-            padding: 12px 16px; 
-            border-radius: 14px; 
-            max-width: 85%; 
+            bottom: 12px; 
+            right: 16px; 
+            background: rgba(11, 12, 14, 0.7); 
+            backdrop-filter: blur(4px);
+            padding: 4px 10px; 
+            border-radius: 20px; 
+            max-width: 90%; 
             font-family: monospace; 
-            font-size: 0.68rem; 
+            font-size: 0.58rem; /* Ultra pequeño */
             border: 1px solid var(--border-gray); 
             pointer-events: none; 
-            word-break: break-all; 
             z-index: 5; 
-            color: #94a3b8; 
+            color: var(--text-muted); 
+            letter-spacing: -0.1px;
         }
     </style>
 </head>
@@ -337,17 +307,17 @@
     <div class="controls-panel">
         <h2>Gradient Generator Vol. 1</h2>
         
-        <button class="btn btn-lucky" id="btnLucky">🎲 Get Lucky (Randomize)</button>
+        <button class="btn btn-lucky" id="btnLucky">Get Lucky</button>
 
         <div class="ui-section">
-            <div class="section-header">1. Color Gradient</div>
+            <div class="section-header">Color Gradient</div>
             <div class="color-pickers">
                 <div class="color-box"><label>Color 1</label><div class="color-row"><input type="color" id="picker1" value="#ff007f"><input type="text" id="hex1" value="#ff007f" maxlength="7"></div></div>
                 <div class="color-box"><label>Color 2</label><div class="color-row"><input type="color" id="picker2" value="#7f00ff"><input type="text" id="hex2" value="#7f00ff" maxlength="7"></div></div>
                 <div class="color-box"><label>Color 3</label><div class="color-row"><input type="color" id="picker3" value="#00f0ff"><input type="text" id="hex3" value="#00f0ff" maxlength="7"></div></div>
                 <div class="color-box"><label>Color 4</label><div class="color-row"><input type="color" id="picker4" value="#ffaa00"><input type="text" id="hex4" value="#ffaa00" maxlength="7"></div></div>
             </div>
-            <div style="margin-top: 14px;">
+            <div style="margin-top: 8px;">
                 <div class="radio-group">
                     <label class="radio-label active" id="lbl-linear"><input type="radio" name="gtype" value="linear" checked><span>Linear</span></label>
                     <label class="radio-label" id="lbl-radial"><input type="radio" name="gtype" value="radial"><span>Radial</span></label>
@@ -356,22 +326,22 @@
         </div>
 
         <div class="ui-section" id="angle-section">
-            <div class="section-header">2. Angle</div>
+            <div class="section-header">Angle</div>
             <input type="text" id="angleInput" value="0">
         </div>
 
         <div class="ui-section">
-            <div class="section-header">3. Blur & Blend</div>
-            <div style="margin-bottom: 14px;">
+            <div class="section-header">Blur & Blend</div>
+            <div style="margin-bottom: 8px;">
                 <div class="section-title">Color Blend: <span id="blendValue">0%</span></div>
                 <input type="range" id="blendSlider" min="0" max="50" step="10" value="0">
             </div>
-            <div style="margin-bottom: 14px;">
+            <div style="margin-bottom: 8px;">
                 <div class="section-title">Gaussian Blur: <span id="blurValue">0px</span></div>
                 <input type="range" id="blurSlider" min="0" max="100" step="10" value="0">
             </div>
             <div>
-                <div class="section-title" style="margin-bottom: 8px;">Motion Blur Angle</div>
+                <div class="section-title" style="margin-bottom: 4px;">Motion Blur Angle</div>
                 <div class="blur-grid">
                     <label class="radio-label active" id="lbl-m-off"><input type="radio" name="mblur" value="off" checked><span>Disabled</span></label>
                     <label class="radio-label" id="lbl-m-0"><input type="radio" name="mblur" value="0"><span>0° Horiz</span></label>
@@ -383,12 +353,12 @@
         </div>
 
         <div class="ui-section">
-            <div class="section-header">4. Animation</div>
-            <div style="margin-bottom: 14px;">
+            <div class="section-header">Animation</div>
+            <div style="margin-bottom: 8px;">
                 <div class="section-title">Smoothness (Ease): <span id="easeValue">Smooth</span></div>
                 <input type="range" id="easeSlider" min="1" max="20" step="1" value="5">
             </div>
-            <div style="margin-bottom: 14px;">
+            <div style="margin-bottom: 8px;">
                 <div class="section-title">Center Echo (Trails)</div>
                 <input type="range" id="echoSlider" min="0" max="95" step="5" value="0">
             </div>
@@ -396,8 +366,8 @@
         </div>
 
         <div class="ui-section">
-            <div class="section-header">5. Aspect Ratio</div>
-            <div class="radio-group spec-grid" style="margin-bottom: 14px;">
+            <div class="section-header">Aspect Ratio</div>
+            <div class="radio-group spec-grid" style="margin-bottom: 10px;">
                 <label class="radio-label active" id="lbl-16-9"><input type="radio" name="aspectRatio" value="16-9" checked><span>16:9</span></label>
                 <label class="radio-label" id="lbl-3-4"><input type="radio" name="aspectRatio" value="3-4"><span>3:4</span></label>
                 <label class="radio-label" id="lbl-9-16"><input type="radio" name="aspectRatio" value="9-16"><span>9:16</span></label>
@@ -586,9 +556,8 @@
         function updateOutputText() {
             const type = document.querySelector('input[name="gtype"]:checked').value;
             const c1 = hexInputs[0].value; const c2 = hexInputs[1].value; const c3 = hexInputs[2].value; const c4 = hexInputs[3].value;
-            let extStr = blurSlider.value > 0 ? ` filter: blur(${blurSlider.value}px);` : '';
-            if (type === 'linear') codeOutput.textContent = `background: linear-gradient(${Math.round(currentAngle)}deg, ${c1} 0%, ${c2} ${Math.round(stop2)}%, ${c3} ${Math.round(stop3)}%, ${c4} 100%);${extStr}`;
-            else codeOutput.textContent = `background: radial-gradient(circle at ${Math.round(currentX)}% ${Math.round(currentY)}%, ${c1} 0%, ${c2} ${Math.round(stop2)}%, ${c3} ${Math.round(stop3)}%, ${c4} 100%);${extStr}`;
+            if (type === 'linear') codeOutput.textContent = `linear-gradient(${Math.round(currentAngle)}deg, ${c1}, ${c4})`;
+            else codeOutput.textContent = `radial-gradient(circle at ${Math.round(currentX)}% ${Math.round(currentY)}%, ${c1}, ${c4})`;
         }
 
         function animate() {
@@ -598,7 +567,7 @@
             if (document.querySelector('input[name="gtype"]:checked').value === 'linear') angleInput.value = Math.round(currentAngle);
             drawGradient();
             if (Math.abs(targetAngle - currentAngle) < 1.5 && Math.abs(targetX - currentX) < 1.5) pickNewTargets();
-            document.recordingAnimationFrame = requestAnimationFrame(animate);
+            requestAnimationFrame(animate);
         }
         function pickNewTargets() { targetAngle = Math.random() * 360; targetX = Math.random() * 100; targetY = Math.random() * 100; }
 
