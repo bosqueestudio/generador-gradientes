@@ -45,7 +45,7 @@
             overflow: hidden;
         }
         
-        /* Panel Izquierdo Compactado y sin Scroll */
+        /* Panel Izquierdo Compacto */
         .controls-panel { 
             width: 330px; 
             min-width: 310px; 
@@ -56,8 +56,9 @@
             flex-direction: column; 
             gap: 12px; 
             height: 100vh; 
-            overflow: hidden; /* Forzamos a que no exista scroll */
-            justify-content: space-between;
+            overflow: hidden; 
+            justify-content: flex-start;
+            z-index: 10;
         }
         
         h2 { 
@@ -67,6 +68,7 @@
             padding-bottom: 10px; 
             color: #fff; 
             font-weight: 700; 
+            margin-bottom: 4px;
         }
         
         .ui-section { 
@@ -76,7 +78,6 @@
             background: rgba(255,255,255,0.01); 
         }
         
-        /* Encabezados de sección en negrita */
         .section-header { 
             font-size: 0.72rem; 
             color: var(--text-main); 
@@ -84,19 +85,23 @@
             font-weight: 700; 
         }
 
-        /* Subtítulos internos en peso normal */
         .section-title { 
             font-size: 0.68rem; 
             color: var(--text-muted); 
             margin-bottom: 4px; 
             display: flex; 
             justify-content: space-between; 
-            font-weight: 400; /* Normal, sin negritas */
+            font-weight: 400; 
         }
         
+        /* El color de acento solo aparece en Rollover/Hover o activo */
         .section-title span { 
-            color: var(--neon-green); 
+            color: var(--text-muted); 
             font-weight: 600;
+            transition: color 0.2s;
+        }
+        .ui-section:hover .section-title span {
+            color: var(--neon-green);
         }
 
         .color-pickers { 
@@ -111,11 +116,10 @@
             gap: 2px; 
         }
         
-        /* Etiquetas internas en peso normal */
         .color-box label { 
             font-size: 0.65rem; 
             color: var(--text-muted); 
-            font-weight: 400; /* Normal, sin negritas */
+            font-weight: 400; 
         }
         
         .color-row { 
@@ -148,6 +152,11 @@
             font-size: 0.68rem; 
             text-align: center; 
             font-weight: 400;
+            transition: border-color 0.2s;
+        }
+        
+        input[type="text"]:hover, #angleInput:hover {
+            border-color: var(--neon-green);
         }
         
         .radio-group { 
@@ -179,13 +188,20 @@
             justify-content: center; 
             font-size: 0.68rem; 
             color: var(--text-main); 
-            font-weight: 400; /* Texto normal en opciones deseleccionadas */
+            font-weight: 400; 
+            transition: all 0.2s;
+        }
+        
+        .radio-label:hover { 
+            border-color: var(--neon-green);
+            color: var(--neon-green);
         }
         
         .radio-label input { 
             display: none; 
         }
         
+        /* Marcado activo: Fondo Verde Neón */
         .radio-label.active { 
             border: 1px solid var(--neon-green); 
             background: var(--neon-green); 
@@ -193,15 +209,20 @@
         }
         
         .radio-label.active span {
-            font-weight: 700; /* Solo resalta si está activo */
+            font-weight: 700; 
         }
         
         input[type="range"] { 
-            accent-color: var(--neon-green); 
+            accent-color: var(--text-muted); 
             cursor: pointer; 
             width: 100%; 
             background: var(--bg-input); 
             height: 3px; 
+            transition: accent-color 0.2s;
+        }
+        
+        input[type="range"]:hover {
+            accent-color: var(--neon-green);
         }
         
         .btn { 
@@ -217,89 +238,126 @@
         }
         
         .btn-neon { 
-            background: var(--neon-green); 
-            box-shadow: 0 4px 10px rgba(137, 255, 0, 0.1); 
+            background: var(--bg-input);
+            border: 1px solid var(--border-gray);
+            color: var(--text-main);
+            margin-top: 4px;
         }
         
         .btn-neon:hover { 
-            background: #7ae600; 
-        }
-        
-        .btn-sec { 
-            background: var(--bg-input); 
-            border: 1px solid var(--border-gray); 
-            color: var(--text-main); 
-            margin-bottom: 6px;
-        }
-        
-        .btn-sec:hover { 
-            background: var(--border-gray); 
-        }
-        
-        .btn-animate.active { 
-            background: #ef4444; 
-            color: #fff; 
-            border-color: #ef4444;
+            background: var(--neon-green); 
+            color: #000;
+            border-color: var(--neon-green);
+            box-shadow: 0 4px 12px rgba(137, 255, 0, 0.15); 
         }
         
         .btn-lucky { 
             background: var(--bg-input); 
             border: 1px solid var(--border-gray); 
-            color: var(--neon-green); 
+            color: var(--text-main); 
             padding: 8px 12px;
+            margin-bottom: 4px;
+            transition: all 0.2s;
         }
 
-        /* Contenedor Derecho con Patrón de Puntos de Ingeniería (Dot Grid) */
+        .btn-lucky:hover { 
+            background: var(--bg-panel);
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+        }
+
+        /* Contenedor Derecho */
         .visualizer-container { 
             flex: 1; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             background-color: var(--bg-darkest); 
-            /* Grid de puntos */
             background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
             background-size: 16px 16px;
             padding: 24px; 
             overflow: hidden; 
             position: relative; 
+            transition: padding 0.3s ease;
         }
         
+        /* BORDIES RECTOS EN EL VISUALIZADOR (Sin curvas) */
         .visualizer { 
             position: relative; 
             box-shadow: 0 40px 80px rgba(0,0,0,0.6); 
-            border-radius: 24px; 
+            border-radius: 0px; /* Bordes completamente rectos */
             max-width: 100%; 
             max-height: 90vh; 
-            transition: width 0.4s, height 0.4s; 
+            transition: width 0.3s ease, height 0.3s ease, max-height 0.3s ease; 
             overflow: hidden; 
             cursor: crosshair; 
             border: 1px solid var(--border-gray); 
         }
         
+        /* Ratios de Aspecto por defecto */
         .ratio-16-9 { width: 100%; max-width: 760px; aspect-ratio: 16 / 9; }
         .ratio-3-4 { height: 100%; max-height: 520px; aspect-ratio: 3 / 4; }
         .ratio-9-16 { height: 100%; max-height: 560px; aspect-ratio: 9 / 16; }
 
+        /* ESTADO FULL BLEED (Acomodado al 100% sin perder menú) */
+        .visualizer.full-bleed-mode {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            max-height: 100vh !important;
+            aspect-ratio: auto !important;
+            border: none;
+        }
+        .visualizer-container.no-padding {
+            padding: 0px;
+        }
+
         .blur-layer { width: 100%; height: 100%; position: relative; }
         .canvas-bg { position: absolute; top:0; left:0; width:100%; height:100%; }
 
-        /* Información Técnica muy discreta en la esquina inferior derecha */
+        /* Botones Sutiles de Escala Superior Derecha */
+        .scale-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 28px;
+            height: 28px;
+            background: rgba(18, 20, 24, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 6;
+            opacity: 0.6;
+            transition: all 0.2s;
+            font-size: 0.75rem;
+        }
+        .scale-btn:hover {
+            opacity: 1;
+            background: var(--bg-panel);
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+        }
+
+        /* Información Técnica */
         .code-output { 
             position: absolute; 
             bottom: 12px; 
             right: 16px; 
-            background: rgba(11, 12, 14, 0.7); 
+            background: rgba(11, 12, 14, 0.6); 
             backdrop-filter: blur(4px);
             padding: 4px 10px; 
             border-radius: 20px; 
             max-width: 90%; 
             font-family: monospace; 
-            font-size: 0.58rem; /* Ultra pequeño */
+            font-size: 0.58rem; 
             border: 1px solid var(--border-gray); 
             pointer-events: none; 
             z-index: 5; 
             color: var(--text-muted); 
-            letter-spacing: -0.1px;
         }
     </style>
 </head>
@@ -353,21 +411,8 @@
         </div>
 
         <div class="ui-section">
-            <div class="section-header">Animation</div>
-            <div style="margin-bottom: 8px;">
-                <div class="section-title">Smoothness (Ease): <span id="easeValue">Smooth</span></div>
-                <input type="range" id="easeSlider" min="1" max="20" step="1" value="5">
-            </div>
-            <div style="margin-bottom: 8px;">
-                <div class="section-title">Center Echo (Trails)</div>
-                <input type="range" id="echoSlider" min="0" max="95" step="5" value="0">
-            </div>
-            <button class="btn btn-sec btn-animate" id="btnAnimate">Start Animation</button>
-        </div>
-
-        <div class="ui-section">
             <div class="section-header">Aspect Ratio</div>
-            <div class="radio-group spec-grid" style="margin-bottom: 10px;">
+            <div class="radio-group spec-grid" style="margin-bottom: 8px;">
                 <label class="radio-label active" id="lbl-16-9"><input type="radio" name="aspectRatio" value="16-9" checked><span>16:9</span></label>
                 <label class="radio-label" id="lbl-3-4"><input type="radio" name="aspectRatio" value="3-4"><span>3:4</span></label>
                 <label class="radio-label" id="lbl-9-16"><input type="radio" name="aspectRatio" value="9-16"><span>9:16</span></label>
@@ -376,8 +421,10 @@
         </div>
     </div>
 
-    <div class="visualizer-container">
+    <div class="visualizer-container" id="visContainer">
         <div class="visualizer ratio-16-9" id="visualizer">
+            <button class="scale-btn" id="btnScale" title="Toggle Full Bleed">⤢</button>
+            
             <div class="blur-layer" id="blurLayer">
                 <canvas id="gradientCanvas" class="canvas-bg"></canvas>
             </div>
@@ -387,14 +434,15 @@
 
     <script>
         const visualizer = document.getElementById('visualizer');
+        const visContainer = document.getElementById('visContainer');
         const blurLayer = document.getElementById('blurLayer');
         const canvas = document.getElementById('gradientCanvas');
         const ctx = canvas.getContext('2d');
         const codeOutput = document.getElementById('codeOutput');
         
-        const btnAnimate = document.getElementById('btnAnimate');
         const btnDownload = document.getElementById('btnDownload');
         const btnLucky = document.getElementById('btnLucky');
+        const btnScale = document.getElementById('btnScale');
         const angleInput = document.getElementById('angleInput');
         const angleSection = document.getElementById('angle-section');
         
@@ -402,9 +450,6 @@
         const blendValue = document.getElementById('blendValue');
         const blurSlider = document.getElementById('blurSlider');
         const blurValue = document.getElementById('blurValue');
-        const easeSlider = document.getElementById('easeSlider');
-        const easeValue = document.getElementById('easeValue');
-        const echoSlider = document.getElementById('echoSlider');
 
         const pickers = [1, 2, 3, 4].map(i => document.getElementById(`picker${i}`));
         const hexInputs = [1, 2, 3, 4].map(i => document.getElementById(`hex${i}`));
@@ -412,14 +457,12 @@
         const radiosRatio = document.getElementsByName('aspectRatio');
         const radiosMblur = document.getElementsByName('mblur');
 
-        let isAnimating = false;
         let stop2 = 33, stop3 = 66;
-        let easeFactor = 0.05;
-        let echoAmount = 0;   
+        let isFullBleed = false;
 
-        let currentAngle = 0, targetAngle = 0;
-        let currentX = 50, targetX = 50;
-        let currentY = 50, targetY = 50;
+        let currentAngle = 0;
+        let currentX = 50;
+        let currentY = 50;
 
         function resizeCanvas() {
             canvas.width = visualizer.clientWidth;
@@ -431,13 +474,7 @@
 
         function drawGradient() {
             if (canvas.width === 0 || canvas.height === 0) return;
-
-            if (echoAmount > 0 && isAnimating) {
-                ctx.fillStyle = `rgba(11, 12, 14, ${1 - echoAmount})`; 
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-            } else {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-            }
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             const type = document.querySelector('input[name="gtype"]:checked').value;
             const c1 = hexInputs[0].value; const c2 = hexInputs[1].value; const c3 = hexInputs[2].value; const c4 = hexInputs[3].value;
@@ -479,44 +516,53 @@
             blurLayer.style.filter = filterString;
         }
 
+        // CLIC FIJO MANUAL
         visualizer.addEventListener('click', (e) => {
+            if (e.target === btnScale) return; // Evitar que el clic en el botón mueva el centro
             const rect = visualizer.getBoundingClientRect();
-            let clickX = ((e.clientX - rect.left) / rect.width) * 100;
-            let clickY = ((e.clientY - rect.top) / rect.height) * 100;
-            targetX = clickX; targetY = clickY;
-            if (!isAnimating) { currentX = clickX; currentY = clickY; drawGradient(); }
+            currentX = ((e.clientX - rect.left) / rect.width) * 100;
+            currentY = ((e.clientY - rect.top) / rect.height) * 100;
+            drawGradient();
         });
 
+        // CONTROL DE MODO FULL BLEED DESDE EL PROPIO ARTBOARD
+        btnScale.addEventListener('click', () => {
+            isFullBleed = !isFullBleed;
+            if (isFullBleed) {
+                visualizer.classList.add('full-bleed-mode');
+                visContainer.classList.add('no-padding');
+                btnScale.textContent = '✕'; // Cambia el icono a una X para cerrar
+            } else {
+                visualizer.classList.remove('full-bleed-mode');
+                visContainer.classList.remove('no-padding');
+                btnScale.textContent = '⤢'; // Vuelve al icono de escala original
+            }
+            setTimeout(resizeCanvas, 50);
+        });
+
+        // BOTÓN GET LUCKY 
         function generateRandomHex() {
             return '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
         }
-
         btnLucky.addEventListener('click', () => {
             pickers.forEach((picker, index) => {
                 const randomColor = generateRandomHex();
-                picker.value = randomColor;
-                hexInputs[index].value = randomColor;
+                picker.value = randomColor; hexInputs[index].value = randomColor;
             });
-            
             blendSlider.value = [0, 10, 20, 30, 40, 50][Math.floor(Math.random() * 6)];
             blendValue.textContent = `${blendSlider.value}%`;
-            stop2 = 33 + (parseInt(blendSlider.value) * 0.33); 
-            stop3 = 66 - (parseInt(blendSlider.value) * 0.33);
+            stop2 = 33 + (parseInt(blendSlider.value) * 0.33); stop3 = 66 - (parseInt(blendSlider.value) * 0.33);
 
             if(Math.random() > 0.5) {
                 radiosGtype[0].checked = true;
-                currentAngle = Math.floor(Math.random() * 360);
-                angleInput.value = currentAngle;
+                currentAngle = Math.floor(Math.random() * 360); angleInput.value = currentAngle;
             } else {
                 radiosGtype[1].checked = true;
-                currentX = Math.floor(Math.random() * 100);
-                currentY = Math.floor(Math.random() * 100);
+                currentX = Math.floor(Math.random() * 100); currentY = Math.floor(Math.random() * 100);
             }
-            
             document.getElementById('lbl-linear').classList.toggle('active', radiosGtype[0].checked);
             document.getElementById('lbl-radial').classList.toggle('active', radiosGtype[1].checked);
             angleSection.style.display = radiosGtype[0].checked ? 'block' : 'none';
-
             drawGradient();
         });
 
@@ -531,12 +577,6 @@
             updateBlurFilters();
         }));
 
-        easeSlider.addEventListener('input', (e) => {
-            let val = parseInt(e.target.value); easeFactor = (21 - val) * 0.01;
-            if (val <= 6) easeValue.textContent = "Heavy"; else if (val <= 14) easeValue.textContent = "Smooth"; else easeValue.textContent = "Reactive";
-        });
-        echoSlider.addEventListener('input', (e) => echoAmount = parseInt(e.target.value) / 100);
-        
         radiosGtype.forEach(radio => radio.addEventListener('change', (e) => {
             document.getElementById('lbl-linear').classList.toggle('active', e.target.value === 'linear');
             document.getElementById('lbl-radial').classList.toggle('active', e.target.value === 'radial');
@@ -544,9 +584,10 @@
             drawGradient();
         }));
         
-        angleInput.addEventListener('input', (e) => { if(!isAnimating) { currentAngle = parseInt(e.target.value) || 0; drawGradient(); } });
+        angleInput.addEventListener('input', (e) => { currentAngle = parseInt(e.target.value) || 0; drawGradient(); });
         
         radiosRatio.forEach(radio => radio.addEventListener('change', (e) => {
+            if (isFullBleed) return; // Ignorar cambio visual si está maximizado
             ['16-9', '3-4', '9-16'].forEach(v => document.getElementById(`lbl-${v}`).classList.remove('active'));
             document.getElementById(`lbl-${e.target.value}`).classList.add('active');
             visualizer.className = `visualizer ratio-${e.target.value}`;
@@ -555,34 +596,74 @@
 
         function updateOutputText() {
             const type = document.querySelector('input[name="gtype"]:checked').value;
-            const c1 = hexInputs[0].value; const c2 = hexInputs[1].value; const c3 = hexInputs[2].value; const c4 = hexInputs[3].value;
+            const c1 = hexInputs[0].value; const c4 = hexInputs[3].value;
             if (type === 'linear') codeOutput.textContent = `linear-gradient(${Math.round(currentAngle)}deg, ${c1}, ${c4})`;
             else codeOutput.textContent = `radial-gradient(circle at ${Math.round(currentX)}% ${Math.round(currentY)}%, ${c1}, ${c4})`;
         }
 
-        function animate() {
-            if (!isAnimating) return;
-            currentAngle += (targetAngle - currentAngle) * easeFactor;
-            currentX += (targetX - currentX) * easeFactor; currentY += (targetY - currentY) * easeFactor;
-            if (document.querySelector('input[name="gtype"]:checked').value === 'linear') angleInput.value = Math.round(currentAngle);
-            drawGradient();
-            if (Math.abs(targetAngle - currentAngle) < 1.5 && Math.abs(targetX - currentX) < 1.5) pickNewTargets();
-            requestAnimationFrame(animate);
-        }
-        function pickNewTargets() { targetAngle = Math.random() * 360; targetX = Math.random() * 100; targetY = Math.random() * 100; }
-
-        btnAnimate.addEventListener('click', () => {
-            isAnimating = !isAnimating;
-            if (isAnimating) { btnAnimate.textContent = "Stop Animation"; btnAnimate.classList.add('active'); pickNewTargets(); animate(); }
-            else { btnAnimate.textContent = "Start Animation"; btnAnimate.classList.remove('active'); drawGradient(); }
-        });
-
+        // DESCARGA EN RESOLUCIONES EXACTAS PROFESIONALES RE-RENDERIZANDO UN CANVAS VIRTUAL
         btnDownload.addEventListener('click', () => {
-            codeOutput.style.display = 'none';
-            html2canvas(visualizer, { useCORS: true, logging: false }).then(canvasTarget => {
-                const link = document.createElement('a'); link.download = `gradient-${document.querySelector('input[name="aspectRatio"]:checked').value}.png`;
-                link.href = canvasTarget.toDataURL('image/png'); link.click(); codeOutput.style.display = 'block';
-            });
+            const ratioSelected = document.querySelector('input[name="aspectRatio"]:checked').value;
+            
+            // Definir tamaños objetivo exactos en píxeles
+            let targetWidth = 1920;
+            let targetHeight = 1080;
+
+            if (ratioSelected === '9-16') {
+                targetWidth = 1080; targetHeight = 1920;
+            } else if (ratioSelected === '3-4') {
+                targetWidth = 1080; targetHeight = 1350;
+            }
+
+            // Creamos un canvas virtual temporal con las dimensiones perfectas de salida
+            const exportCanvas = document.createElement('canvas');
+            exportCanvas.width = targetWidth;
+            exportCanvas.height = targetHeight;
+            const eCtx = exportCanvas.getContext('2d');
+
+            const type = document.querySelector('input[name="gtype"]:checked').value;
+            const c1 = hexInputs[0].value; const c2 = hexInputs[1].value; const c3 = hexInputs[2].value; const c4 = hexInputs[3].value;
+
+            let grad;
+            if (type === 'linear') {
+                let angleRad = (currentAngle * Math.PI) / 180;
+                let r = Math.sqrt(exportCanvas.width**2 + exportCanvas.height**2) / 2;
+                let cx = exportCanvas.width / 2; let cy = exportCanvas.height / 2;
+                let x0 = cx - r * Math.cos(angleRad); let y0 = cy - r * Math.sin(angleRad);
+                let x1 = cx + r * Math.cos(angleRad); let y1 = cy + r * Math.sin(angleRad);
+                grad = eCtx.createLinearGradient(x0, y0, x1, y1);
+            } else {
+                let px = (currentX / 100) * exportCanvas.width; let py = (currentY / 100) * exportCanvas.height;
+                let rMax = Math.max(exportCanvas.width, exportCanvas.height);
+                grad = eCtx.createRadialGradient(px, py, 0, px, py, rMax);
+            }
+
+            grad.addColorStop(0, c1);
+            grad.addColorStop(stop2 / 100, c2);
+            grad.addColorStop(stop3 / 100, c3);
+            grad.addColorStop(1, c4);
+
+            eCtx.fillStyle = grad;
+            eCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+
+            // Aplicar efectos de Desenfoque en el render final si existen
+            if (parseInt(blurSlider.value) > 0) {
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = targetWidth; tempCanvas.height = targetHeight;
+                const tCtx = tempCanvas.getContext('2d');
+                // Escalar el valor del desenfoque proporcionalmente a la resolución de descarga
+                let scaleMultiplier = targetWidth / canvas.width;
+                tCtx.filter = `blur(${blurSlider.value * scaleMultiplier}px)`;
+                tCtx.drawImage(exportCanvas, 0, 0);
+                eCtx.clearRect(0,0, targetWidth, targetHeight);
+                eCtx.drawImage(tempCanvas, 0, 0);
+            }
+
+            // Forzar la descarga del archivo de alta definición
+            const link = document.createElement('a');
+            link.download = `gradient-${ratioSelected}-${targetWidth}x${targetHeight}.png`;
+            link.href = exportCanvas.toDataURL('image/png');
+            link.click();
         });
 
         setTimeout(resizeCanvas, 100);
