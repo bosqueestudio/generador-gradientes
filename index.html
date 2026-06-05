@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gradient Generator Vol. 1 - Fluid Animation</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <title>Gradient Generator Vol. 1</title>
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
-            /* Paleta Aura AI */
             --bg-darkest: #0d0e12;
             --bg-panel: #161722;
             --bg-input: #212330;
@@ -22,163 +21,24 @@
             --gradSize: 100%;
         }
 
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        body { 
-            display: flex; 
-            height: 100vh; 
-            background-color: var(--bg-darkest); 
-            color: var(--text-main); 
-            overflow: hidden;
-            font-weight: 300;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+        body { display: flex; height: 100vh; background-color: var(--bg-darkest); color: var(--text-main); overflow: hidden; font-weight: 300; }
 
         /* MODAL BIENVENIDA */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(13, 14, 18, 0.95);
-            backdrop-filter: blur(20px);
-            z-index: 100;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .modal-box {
-            background: var(--bg-panel);
-            border: 1px solid var(--border-gray);
-            border-radius: 24px;
-            padding: 40px;
-            max-width: 440px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(13, 14, 18, 0.95); backdrop-filter: blur(20px); z-index: 100; display: flex; align-items: center; justify-content: center; }
+        .modal-box { background: var(--bg-panel); border: 1px solid var(--border-gray); border-radius: 24px; padding: 40px; max-width: 440px; width: 90%; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
         .modal-box h3 { font-weight: 700; font-size: 1.4rem; margin-bottom: 12px; }
         .modal-box p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 30px; }
-        .modal-box .btn-enter {
-            background: var(--aura-purple);
-            color: #000; border: none; padding: 14px 32px; border-radius: 40px;
-            font-size: 0.85rem; font-weight: 700; cursor: pointer;
-        }
+        .modal-box .btn-enter { background: var(--aura-purple); color: #000; border: none; padding: 14px 32px; border-radius: 40px; font-size: 0.85rem; font-weight: 700; cursor: pointer; }
 
         /* PANEL IZQUIERDO */
-        .controls-panel { 
-            width: 330px; 
-            min-width: 310px; 
-            background: var(--bg-panel); 
-            border-right: 1px solid var(--border-gray); 
-            padding: 20px 16px; 
-            display: flex; flex-direction: column; 
-            height: 100vh; z-index: 10;
-        }
-
-        .logo-container {
-            display: flex; justify-content: center; padding-bottom: 16px;
-            margin-bottom: 8px; border-bottom: 1px solid var(--border-gray);
-        }
+        .controls-panel { width: 330px; min-width: 310px; background: var(--bg-panel); border-right: 1px solid var(--border-gray); padding: 20px 16px; display: flex; flex-direction: column; height: 100vh; z-index: 10; }
+        .logo-container { display: flex; justify-content: center; padding-bottom: 16px; margin-bottom: 8px; border-bottom: 1px solid var(--border-gray); }
         .logo-container img { width: 200px; height: auto; max-height: 45px; object-fit: contain; }
 
         h2 { font-size: 0.8rem; text-align: center; color: var(--text-muted); font-weight: 700; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
-
-        .sections-scroll {
-            flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;
-        }
+        .sections-scroll { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
         .sections-scroll::-webkit-scrollbar { width: 0px; }
 
-        /* SECCIONES DESPLEGABLES */
-        .ui-section { 
-            border: 1px solid var(--border-gray); 
-            border-radius: 16px; 
-            background: rgba(255, 255, 255, 0.02); 
-            overflow: hidden;
-        }
-        
-        .section-header { 
-            font-size: 0.75rem; color: var(--text-main); padding: 14px;
-            font-weight: 700; cursor: pointer; display: flex;
-            justify-content: space-between; align-items: center;
-            background: rgba(255,255,255,0.03); user-select: none;
-        }
-        
-        .section-header::after { 
-            content: '▼'; font-size: 0.6rem; color: var(--text-muted); transition: transform 0.3s;
-        }
-        .ui-section.collapsed .section-header::after { transform: rotate(-90deg); }
-
-        .section-content { 
-            padding: 16px; display: flex; flex-direction: column; gap: 12px;
-            border-top: 1px solid var(--border-gray);
-            background: rgba(0, 0, 0, 0.2);
-        }
-        .ui-section.collapsed .section-content { display: none; }
-
-        .section-title { font-size: 0.7rem; color: var(--text-muted); display: flex; justify-content: space-between; }
-        .ui-section:hover .section-title span { color: var(--aura-purple); transition: color 0.2s; }
-
-        /* INPUTS Y CONTROLES */
-        .count-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-        .color-pickers { display: flex; flex-direction: column; gap: 10px; max-height: 170px; overflow-y: auto; }
-        .color-row { display: flex; gap: 8px; align-items: center; }
-        
-        input[type="color"] { -webkit-appearance: none; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; background: none; flex-shrink: 0; }
-        input[type="color"]::-webkit-color-swatch { border: 1px solid var(--border-gray); border-radius: 50%; }
-        
-        input[type="text"] { 
-            width: 100%; background: var(--bg-input); border: 1px solid var(--border-gray);
-            color: #fff; padding: 8px 14px; border-radius: 40px; font-size: 0.75rem; text-align: center;
-        }
-        
-        .radio-group { display: flex; gap: 6px; }
-        .radio-label { 
-            background: var(--bg-input); border: 1px solid var(--border-gray);
-            padding: 8px; border-radius: 40px; flex: 1; text-align: center;
-            font-size: 0.7rem; cursor: pointer; transition: 0.2s;
-        }
-        .radio-label.active { background: var(--aura-purple); color: #000; border-color: var(--aura-purple); font-weight: 700; }
-        .radio-label input { display: none; }
-
-        input[type="range"] { accent-color: var(--aura-purple); cursor: pointer; width: 100%; background: var(--bg-input); height: 4px; border-radius: 2px; }
-
-        /* ACCIONES */
-        .bottom-actions { display: flex; flex-direction: column; gap: 8px; padding-top: 16px; border-top: 1px solid var(--border-gray); }
-        .btn { 
-            border: none; padding: 12px; border-radius: 40px; font-size: 0.8rem;
-            font-weight: 700; cursor: pointer; transition: 0.2s; text-align: center;
-        }
-        .btn-neon { background: var(--aura-purple); color: #000; }
-        .btn-lucky { background: var(--bg-input); border: 1px solid var(--border-gray); color: var(--text-main); }
-        .btn-lucky:hover { background: var(--aura-purple); color: #000; }
-        .btn-reset { background: transparent; color: var(--text-muted); font-size: 0.7rem; }
-
-        /* VISUALIZADOR CON FILTRO MESH LIQUID */
-        .visualizer-container { 
-            flex: 1; display: flex; align-items: center; justify-content: center;
-            background-color: var(--bg-darkest);
-            background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 20px 20px; position: relative; padding: 40px;
-        }
-        .visualizer { 
-            position: relative; box-shadow: 0 50px 100px rgba(0,0,0,0.8);
-            width: 100%; max-width: 800px; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            overflow: hidden; border: 1px solid var(--border-gray); background: #0b0c10;
-        }
-        
-        .blur-wrapper {
-            width: 100%;
-            height: 100%;
-            transition: filter 0.3s ease;
-        }
-        .blur-wrapper.liquid-mode {
-            filter: blur(80px) saturate(140%);
-        }
-
-        .ratio-16-9 { aspect-ratio: 16 / 9; }
-        .ratio-3-4 { max-width: 500px; aspect-ratio: 3 / 4; }
-        .ratio-9-16 { max-width: 400px; aspect-ratio: 9 / 16; }
-
-        .full-bleed-mode { width: 100% !important; height: 100% !important; max-width: 100% !important; aspect-ratio: auto !important; border: none
+        .ui-section { border: 1px solid var(--border-gray); border-radius: 16px; background: rgba(255, 255, 255, 0.02); overflow: hidden; }
+        .section-header { font-size: 0.75rem; color: var(--text-main); padding: 14px; font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: rgba(255,
