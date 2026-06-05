@@ -1,9 +1,9 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gradient Generator Vol. 1</title>
+    <title>Gradient Generator Vol. 1 - Fluid Animation</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
@@ -14,7 +14,7 @@
             --border-gray: #2c2e3f;
             --text-main: #f1f1f7;
             --text-muted: #787c99;
-            --aura-purple: #B370FF; /* Color sólido solicitado */
+            --aura-purple: #B370FF;
             
             --angle: 0deg;
             --posX: 50%;
@@ -26,7 +26,6 @@
             box-sizing: border-box; 
             margin: 0; 
             padding: 0; 
-            /* Tipografía de sistema profesional (Light 300 / Bold 700) */
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             -webkit-font-smoothing: antialiased;
         }
@@ -37,7 +36,7 @@
             background-color: var(--bg-darkest); 
             color: var(--text-main); 
             overflow: hidden;
-            font-weight: 300; /* Light 300 */
+            font-weight: 300;
         }
 
         /* MODAL BIENVENIDA */
@@ -123,10 +122,10 @@
 
         /* INPUTS Y CONTROLES */
         .count-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-        .color-pickers { display: flex; flex-direction: column; gap: 10px; max-height: 180px; overflow-y: auto; }
+        .color-pickers { display: flex; flex-direction: column; gap: 10px; max-height: 170px; overflow-y: auto; }
         .color-row { display: flex; gap: 8px; align-items: center; }
         
-        input[type="color"] { -webkit-appearance: none; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; background: none; }
+        input[type="color"] { -webkit-appearance: none; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; background: none; flex-shrink: 0; }
         input[type="color"]::-webkit-color-swatch { border: 1px solid var(--border-gray); border-radius: 50%; }
         
         input[type="text"] { 
@@ -156,7 +155,7 @@
         .btn-lucky:hover { background: var(--aura-purple); color: #000; }
         .btn-reset { background: transparent; color: var(--text-muted); font-size: 0.7rem; }
 
-        /* VISUALIZADOR */
+        /* VISUALIZADOR CON FILTRO MESH LIQUID */
         .visualizer-container { 
             flex: 1; display: flex; align-items: center; justify-content: center;
             background-color: var(--bg-darkest);
@@ -166,238 +165,20 @@
         .visualizer { 
             position: relative; box-shadow: 0 50px 100px rgba(0,0,0,0.8);
             width: 100%; max-width: 800px; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            overflow: hidden; border: 1px solid var(--border-gray); background: #000;
+            overflow: hidden; border: 1px solid var(--border-gray); background: #0b0c10;
         }
+        
+        .blur-wrapper {
+            width: 100%;
+            height: 100%;
+            transition: filter 0.3s ease;
+        }
+        .blur-wrapper.liquid-mode {
+            filter: blur(80px) saturate(140%);
+        }
+
         .ratio-16-9 { aspect-ratio: 16 / 9; }
         .ratio-3-4 { max-width: 500px; aspect-ratio: 3 / 4; }
         .ratio-9-16 { max-width: 400px; aspect-ratio: 9 / 16; }
 
-        .full-bleed-mode { width: 100% !important; height: 100% !important; max-width: 100% !important; aspect-ratio: auto !important; border: none; }
-
-        .canvas-bg { width: 100%; height: 100%; display: block; }
-
-        .scale-btn { 
-            position: absolute; top: 16px; right: 16px; width: 32px; height: 32px;
-            background: rgba(0,0,0,0.5); border: 1px solid var(--border-gray);
-            color: #fff; border-radius: 10px; cursor: pointer; z-index: 10;
-            backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center;
-        }
-
-        .code-output { 
-            position: absolute; bottom: 16px; right: 20px; 
-            font-size: 0.6rem; color: var(--text-muted); font-family: monospace;
-            background: rgba(0,0,0,0.4); padding: 5px 12px; border-radius: 20px;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="modal-overlay" id="welcomeModal">
-        <div class="modal-box">
-            <h3>Welcome to my Experiment</h3>
-            <p>A high-fidelity tool to generate and export professional gradients instantly.</p>
-            <button class="btn-enter" id="btnEnter">Get Started</button>
-        </div>
-    </div>
-
-    <div class="controls-panel">
-        <div class="logo-container">
-            <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
-            <span id="fallbackLogo" style="font-weight:700; letter-spacing:1px; font-size:0.9rem">✦ GRADIENT VOL. 1</span>
-        </div>
-        
-        <h2>Workbench</h2>
-        
-        <div class="sections-scroll">
-            <div class="ui-section" id="sec-colors">
-                <div class="section-header" onclick="toggleSection('sec-colors')">Color Gradient</div>
-                <div class="section-content">
-                    <div class="section-title">Colors Count</div>
-                    <div class="count-grid">
-                        <div class="radio-label" onclick="setCount(2, this)">2</div>
-                        <div class="radio-label active" onclick="setCount(4, this)">4</div>
-                        <div class="radio-label" onclick="setCount(6, this)">6</div>
-                        <div class="radio-label" onclick="setCount(8, this)">8</div>
-                    </div>
-                    <div class="color-pickers" id="pickersContainer"></div>
-                    <div class="radio-group" style="margin-top:5px">
-                        <div class="radio-label active" id="btn-linear" onclick="setType('linear')">Linear</div>
-                        <div class="radio-label" id="btn-radial" onclick="setType('radial')">Radial</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ui-section" id="sec-angle">
-                <div class="section-header" onclick="toggleSection('sec-angle')">Angle</div>
-                <div class="section-content">
-                    <input type="text" id="angleInput" value="0" oninput="updateAngle(this.value)">
-                </div>
-            </div>
-
-            <div class="ui-section" id="sec-blend">
-                <div class="section-header" onclick="toggleSection('sec-blend')">Blend</div>
-                <div class="section-content">
-                    <div class="section-title">Intensity <span>0%</span></div>
-                    <input type="range" id="blendSlider" min="0" max="50" value="0" oninput="updateBlend(this.value)">
-                    <div class="section-title">Scale <span>100%</span></div>
-                    <input type="range" id="sizeSlider" min="10" max="150" value="100" oninput="updateSize(this.value)">
-                </div>
-            </div>
-
-            <div class="ui-section" id="sec-ratio">
-                <div class="section-header" onclick="toggleSection('sec-ratio')">Aspect Ratio</div>
-                <div class="section-content">
-                    <div class="radio-group">
-                        <div class="radio-label active" id="r-16-9" onclick="setRatio('16-9')">16:9</div>
-                        <div class="radio-label" id="r-3-4" onclick="setRatio('3-4')">3:4</div>
-                        <div class="radio-label" id="r-9-16" onclick="setRatio('9-16')">9:16</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="bottom-actions">
-            <button class="btn btn-neon" onclick="downloadImage()">Download PNG</button>
-            <button class="btn btn-lucky" onclick="randomize()">Get Lucky</button>
-            <button class="btn btn-reset" onclick="resetAll()">Reset Workspace</button>
-        </div>
-    </div>
-
-    <div class="visualizer-container" id="visContainer">
-        <div class="visualizer ratio-16-9" id="visualizer">
-            <button class="scale-btn" onclick="toggleFullBleed()">⤢</button>
-            <canvas id="gradientCanvas" class="canvas-bg"></canvas>
-            <div class="code-output" id="codeText">linear-gradient(0deg, ...)</div>
-        </div>
-    </div>
-
-    <script>
-        const canvas = document.getElementById('gradientCanvas');
-        const ctx = canvas.getContext('2d');
-        const visualizer = document.getElementById('visualizer');
-        const pickersContainer = document.getElementById('pickersContainer');
-
-        let colors = ['#ff007f', '#7f00ff', '#00f0ff', '#ffaa00', '#00ff66', '#ff0033', '#0033ff', '#ffff00'];
-        let activeCount = 4;
-        let type = 'linear';
-        let angle = 0;
-        let blend = 0;
-        let size = 100;
-
-        // BIENVENIDA
-        document.getElementById('btnEnter').onclick = () => {
-            document.getElementById('welcomeModal').style.display = 'none';
-        };
-
-        // VENTANAS ACOPLABLES
-        function toggleSection(id) {
-            document.getElementById(id).classList.toggle('collapsed');
-        }
-
-        // RENDERIZADO DE COLORES
-        function renderPickers() {
-            pickersContainer.innerHTML = '';
-            for(let i=0; i<activeCount; i++) {
-                const div = document.createElement('div');
-                div.className = 'color-row';
-                div.innerHTML = `
-                    <input type="color" value="${colors[i]}" oninput="updateColor(${i}, this.value)">
-                    <input type="text" value="${colors[i]}" oninput="updateColor(${i}, this.value)">
-                `;
-                pickersContainer.appendChild(div);
-            }
-            draw();
-        }
-
-        function updateColor(i, val) {
-            colors[i] = val;
-            renderPickers();
-        }
-
-        function setCount(n, el) {
-            activeCount = n;
-            document.querySelectorAll('#sec-colors .radio-label').forEach(b => b.classList.remove('active'));
-            el.classList.add('active');
-            renderPickers();
-        }
-
-        function setType(t) {
-            type = t;
-            document.getElementById('btn-linear').classList.toggle('active', t==='linear');
-            document.getElementById('btn-radial').classList.toggle('active', t==='radial');
-            draw();
-        }
-
-        function updateAngle(v) { angle = v; draw(); }
-        function updateBlend(v) { blend = v; draw(); }
-        function updateSize(v) { size = v; draw(); }
-
-        function setRatio(r) {
-            visualizer.className = 'visualizer ratio-' + r;
-            document.querySelectorAll('#sec-ratio .radio-label').forEach(b => b.classList.remove('active'));
-            document.getElementById('r-' + r).classList.add('active');
-            setTimeout(resize, 50);
-        }
-
-        function toggleFullBleed() {
-            visualizer.classList.toggle('full-bleed-mode');
-            document.getElementById('visContainer').style.padding = visualizer.classList.contains('full-bleed-mode') ? '0' : '40px';
-            setTimeout(resize, 100);
-        }
-
-        function resize() {
-            canvas.width = visualizer.clientWidth;
-            canvas.height = visualizer.clientHeight;
-            draw();
-        }
-
-        function draw() {
-            if(!canvas.width) return;
-            ctx.clearRect(0,0,canvas.width, canvas.height);
-            let grad;
-            const sMult = size/100;
-
-            if(type === 'linear') {
-                const rad = (angle * Math.PI) / 180;
-                const r = (Math.sqrt(canvas.width**2 + canvas.height**2) / 2) * sMult;
-                const cx = canvas.width/2; const cy = canvas.height/2;
-                grad = ctx.createLinearGradient(cx - r*Math.cos(rad), cy - r*Math.sin(rad), cx + r*Math.cos(rad), cy + r*Math.sin(rad));
-            } else {
-                grad = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, Math.max(canvas.width, canvas.height)*0.6*sMult);
-            }
-
-            for(let i=0; i<activeCount; i++) {
-                let stop = i/(activeCount-1);
-                // Ajuste de blend
-                if(i > 0 && i < activeCount-1) {
-                    stop += (blend/100) * (i < activeCount/2 ? 0.2 : -0.2);
-                }
-                grad.addColorStop(Math.max(0, Math.min(1, stop)), colors[i]);
-            }
-
-            ctx.fillStyle = grad;
-            ctx.fillRect(0,0,canvas.width, canvas.height);
-            document.getElementById('codeText').innerText = `${type}-gradient(${angle}deg, ${colors[0]}, ${colors[activeCount-1]})`;
-        }
-
-        function randomize() {
-            for(let i=0; i<activeCount; i++) colors[i] = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
-            angle = Math.floor(Math.random()*360);
-            document.getElementById('angleInput').value = angle;
-            renderPickers();
-        }
-
-        function resetAll() { location.reload(); }
-
-        function downloadImage() {
-            const link = document.createElement('a');
-            link.download = 'gradient-aura.png';
-            link.href = canvas.toDataURL();
-            link.click();
-        }
-
-        window.onresize = resize;
-        window.onload = () => { renderPickers(); resize(); };
-    </script>
-</body>
-</html>
+        .full-bleed-mode { width: 100% !important; height: 100% !important; max-width: 100% !important; aspect-ratio: auto !important; border: none
