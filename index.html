@@ -13,11 +13,6 @@
             --text-main: #f1f1f7;
             --text-muted: #787c99;
             --aura-purple: #B370FF;
-            
-            --angle: 0deg;
-            --posX: 50%;
-            --posY: 50%;
-            --gradSize: 100%;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
@@ -30,34 +25,16 @@
         .modal-box p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 30px; }
         .modal-box .btn-enter { background: var(--aura-purple); color: #000; border: none; padding: 14px 32px; border-radius: 40px; font-size: 0.85rem; font-weight: 700; cursor: pointer; }
 
-        /* PANEL IZQUIERDO CON MINI SCROLL INTELIGENTE */
-        .controls-panel { 
-            width: 330px; 
-            min-width: 310px; 
-            background: var(--bg-panel); 
-            border-right: 1px solid var(--border-gray); 
-            padding: 14px 12px; 
-            display: flex; 
-            flex-direction: column; 
-            height: 100vh; 
-            z-index: 10; 
-        }
+        /* PANEL IZQUIERDO CON MINI SCROLL */
+        .controls-panel { width: 330px; min-width: 310px; background: var(--bg-panel); border-right: 1px solid var(--border-gray); padding: 14px 12px; display: flex; flex-direction: column; height: 100vh; z-index: 10; }
         .logo-container { display: flex; justify-content: center; padding-bottom: 10px; margin-bottom: 6px; border-bottom: 1px solid var(--border-gray); }
+        .logo-container img { width: 200px; height: auto; max-height: 45px; object-fit: contain; }
         
         h2 { font-size: 0.75rem; text-align: center; color: var(--text-muted); font-weight: 700; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
         
-        /* Contenedor optimizado con mini scroll interactivo */
-        .sections-scroll { 
-            flex: 1; 
-            overflow-y: auto; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 10px; 
-            padding-right: 4px;
-        }
+        .sections-scroll { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 4px; }
         .sections-scroll::-webkit-scrollbar { width: 3px; }
         .sections-scroll::-webkit-scrollbar-thumb { background: var(--border-gray); border-radius: 10px; }
-        .sections-scroll::-webkit-scrollbar-thumb:hover { background: var(--aura-purple); }
 
         .ui-section { border: 1px solid var(--border-gray); border-radius: 14px; background: rgba(255, 255, 255, 0.01); overflow: hidden; }
         .section-header { font-size: 0.72rem; color: var(--text-main); padding: 10px 12px; font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); user-select: none; }
@@ -71,31 +48,21 @@
 
         .count-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
         .color-pickers { display: flex; flex-direction: column; gap: 8px; max-height: 150px; overflow-y: auto; }
-        .color-pickers::-webkit-scrollbar { width: 2px; }
-        .color-pickers::-webkit-scrollbar-thumb { background: var(--border-gray); }
         .color-row { display: flex; gap: 6px; align-items: center; }
         
         input[type="color"] { -webkit-appearance: none; border: none; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; background: none; flex-shrink: 0; }
         input[type="color"]::-webkit-color-swatch { border: 1px solid var(--border-gray); border-radius: 50%; }
         
-        /* EFECTO ROLLOVER: Subrayado interactivo morado solicitado */
         input[type="text"] { 
             width: 100%; background: var(--bg-input); border: 1px solid var(--border-gray);
             border-bottom: 2px solid var(--border-gray);
             color: #fff; padding: 6px 12px; border-radius: 4px; font-size: 0.72rem; text-align: center;
             transition: all 0.2s ease;
         }
-        input[type="text"]:hover, input[type="text"]:focus {
-            border-bottom-color: var(--aura-purple);
-            outline: none;
-        }
+        input[type="text"]:hover, input[type="text"]:focus { border-bottom-color: var(--aura-purple); outline: none; }
         
         .radio-group { display: flex; gap: 4px; }
-        .radio-label { 
-            background: var(--bg-input); border: 1px solid var(--border-gray);
-            padding: 6px; border-radius: 40px; flex: 1; text-align: center;
-            font-size: 0.68rem; cursor: pointer; transition: 0.2s; user-select: none;
-        }
+        .radio-label { background: var(--bg-input); border: 1px solid var(--border-gray); padding: 6px; border-radius: 40px; flex: 1; text-align: center; font-size: 0.68rem; cursor: pointer; transition: 0.2s; user-select: none; }
         .radio-label:hover { border-color: var(--aura-purple); color: var(--aura-purple); }
         .radio-label.active { background: var(--aura-purple); color: #000; border-color: var(--aura-purple); font-weight: 700; }
         
@@ -103,9 +70,351 @@
 
         /* ACCIONES */
         .bottom-actions { display: flex; flex-direction: column; gap: 6px; padding-top: 10px; border-top: 1px solid var(--border-gray); margin-top: 6px; }
-        .btn { 
-            border: none; padding: 10px; border-radius: 40px; font-size: 0.75rem;
-            font-weight: 700; cursor: pointer; transition: 0.2s; text-align: center;
-        }
+        .btn { border: none; padding: 10px; border-radius: 40px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: 0.2s; text-align: center; }
         .btn-neon { background: var(--aura-purple); color: #000; }
-        .btn-lucky { background: var(--bg-input); border: 1px solid var(--border-gray); color: var(--text-main);
+        .btn-lucky { background: var(--bg-input); border: 1px solid var(--border-gray); color: var(--text-main); }
+        .btn-lucky:hover { background: var(--aura-purple); color: #000; }
+        .btn-reset { background: transparent; color: var(--text-muted); font-size: 0.68rem; padding: 4px; }
+        .btn-reset:hover { color: #ef4444; }
+
+        /* VISUALIZADOR */
+        .visualizer-container { flex: 1; display: flex; align-items: center; justify-content: center; background-color: var(--bg-darkest); background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px); background-size: 20px 20px; position: relative; padding: 40px; }
+        .visualizer { position: relative; box-shadow: 0 50px 100px rgba(0,0,0,0.8); width: 100%; max-width: 800px; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); overflow: hidden; border: 1px solid var(--border-gray); background: #0b0c10; }
+        
+        .blur-wrapper { width: 100%; height: 100%; transition: filter 0.3s ease; }
+        .blur-wrapper.liquid-mode { filter: blur(80px) saturate(140%); }
+
+        .ratio-16-9 { aspect-ratio: 16 / 9; }
+        .ratio-3-4 { max-width: 500px; aspect-ratio: 3 / 4; }
+        .ratio-9-16 { max-width: 400px; aspect-ratio: 9 / 16; }
+        .full-bleed-mode { width: 100% !important; height: 100% !important; max-width: 100% !important; aspect-ratio: auto !important; border: none; }
+
+        .canvas-bg { width: 100%; height: 100%; display: block; }
+        .scale-btn { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; background: rgba(0,0,0,0.5); border: 1px solid var(--border-gray); color: #fff; border-radius: 10px; cursor: pointer; z-index: 10; backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; }
+        .code-output { position: absolute; bottom: 16px; right: 20px; font-size: 0.6rem; color: var(--text-muted); font-family: monospace; background: rgba(0,0,0,0.4); padding: 5px 12px; border-radius: 20px; z-index: 9; }
+    </style>
+</head>
+<body>
+
+    <div class="modal-overlay" id="welcomeModal">
+        <div class="modal-box">
+            <h3>Welcome to my Experiment</h3>
+            <p>A high-fidelity tool to generate and export professional fluid gradients instantly.</p>
+            <button class="btn-enter" id="btnEnter">Get Started</button>
+        </div>
+    </div>
+
+    <div class="controls-panel">
+        <div class="logo-container">
+            <img src="logo.png" alt="Logo" id="logoImg">
+        </div>
+        
+        <h2>Workbench</h2>
+        
+        <div class="sections-scroll">
+            <div class="ui-section" id="sec-animation">
+                <div class="section-header" id="head-animation">Live Simulation</div>
+                <div class="section-content">
+                    <div class="section-title">Fluid Motion Mode</div>
+                    <div class="radio-group">
+                        <div class="radio-label active" id="btn-anim-off">Static</div>
+                        <div class="radio-label" id="btn-anim-on">Animate</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui-section" id="sec-colors">
+                <div class="section-header" id="head-colors">Color Gradient</div>
+                <div class="section-content">
+                    <div class="section-title">Colors Count</div>
+                    <div class="count-grid">
+                        <div class="radio-label" id="lbl-c2">2</div>
+                        <div class="radio-label active" id="lbl-c4">4</div>
+                        <div class="radio-label" id="lbl-c6">6</div>
+                        <div class="radio-label" id="lbl-c8">8</div>
+                    </div>
+                    <div class="color-pickers" id="pickersContainer"></div>
+                    <div class="radio-group" id="staticGradTypes" style="margin-top:5px">
+                        <div class="radio-label active" id="btn-linear">Linear</div>
+                        <div class="radio-label" id="btn-radial">Radial</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui-section" id="sec-angle">
+                <div class="section-header" id="head-angle">Angle</div>
+                <div class="section-content">
+                    <input type="text" id="angleInput" value="0">
+                </div>
+            </div>
+
+            <div class="ui-section" id="sec-blend">
+                <div class="section-header" id="head-blend">Blend</div>
+                <div class="section-content">
+                    <div class="section-title">Intensity <span>0%</span></div>
+                    <input type="range" id="blendSlider" min="0" max="50" value="0">
+                    <div class="section-title">Scale / Particle Radius <span>100%</span></div>
+                    <input type="range" id="sizeSlider" min="10" max="150" value="100">
+                </div>
+            </div>
+
+            <div class="ui-section" id="sec-ratio">
+                <div class="section-header" id="head-ratio">Aspect Ratio</div>
+                <div class="section-content">
+                    <div class="radio-group">
+                        <div class="radio-label active" id="r-16-9">16:9</div>
+                        <div class="radio-label" id="r-3-4">3:4</div>
+                        <div class="radio-label" id="r-9-16">9:16</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-actions">
+            <button class="btn btn-neon" id="btnDownload">Download PNG</button>
+            <button class="btn btn-lucky" id="btnLucky">Get Lucky</button>
+            <button class="btn btn-reset" id="btnReset">Reset Workspace</button>
+        </div>
+    </div>
+
+    <div class="visualizer-container" id="visContainer">
+        <div class="visualizer ratio-16-9" id="visualizer">
+            <button class="scale-btn" id="btnScale">⤢</button>
+            <div class="blur-wrapper" id="blurWrapper">
+                <canvas id="gradientCanvas" class="canvas-bg"></canvas>
+            </div>
+            <div class="code-output" id="codeText">linear-gradient(...)</div>
+        </div>
+    </div>
+
+    <script>
+        // Carga protegida: Todo el código corre de manera interna aislada
+        document.addEventListener("DOMContentLoaded", () => {
+            const canvas = document.getElementById('gradientCanvas');
+            const ctx = canvas ? canvas.getContext('2d') : null;
+            const visualizer = document.getElementById('visualizer');
+            const blurWrapper = document.getElementById('blurWrapper');
+            const pickersContainer = document.getElementById('pickersContainer');
+            const codeText = document.getElementById('codeText');
+
+            let defaultColors = ['#FF3366', '#7A22FF', '#00F0FF', '#FFB800', '#00FF66', '#FF0033', '#0033FF', '#FFFF00'];
+            let colors = [...defaultColors];
+            let activeCount = 4;
+            let type = 'linear';
+            let angle = 0;
+            let blend = 0;
+            let size = 100;
+            
+            let isAnimated = false;
+            let animationFrameId = null;
+            let nodes = [];
+
+            // Inicializar nodos líquidos
+            function initFluidNodes() {
+                nodes = [];
+                for(let i = 0; i < 8; i++) {
+                    nodes.push({
+                        x: Math.random() * 100, y: Math.random() * 100,
+                        vx: (Math.random() - 0.5) * 0.25, vy: (Math.random() - 0.5) * 0.25
+                    });
+                }
+            }
+
+            // Cerrar Bienvenida
+            document.getElementById('btnEnter').addEventListener('click', () => {
+                document.getElementById('welcomeModal').style.display = 'none';
+            });
+
+            // Control de colapsos reparado
+            ['animation', 'colors', 'angle', 'blend', 'ratio'].forEach(id => {
+                document.getElementById(`head-${id}`).addEventListener('click', () => {
+                    document.getElementById(`sec-${id}`).classList.toggle('collapsed');
+                });
+            });
+
+            // Renderizar selectores de color de forma segura
+            function renderPickers() {
+                if (!pickersContainer) return;
+                pickersContainer.innerHTML = '';
+                for(let i=0; i<activeCount; i++) {
+                    const div = document.createElement('div');
+                    div.className = 'color-row';
+                    
+                    const colorInput = document.createElement('input');
+                    colorInput.type = 'color'; colorInput.value = colors[i]; colorInput.id = `cp-${i}`;
+                    
+                    const textInput = document.createElement('input');
+                    textInput.type = 'text'; textInput.value = colors[i]; textInput.id = `txt-${i}`;
+
+                    colorInput.addEventListener('input', (e) => {
+                        colors[i] = e.target.value; textInput.value = e.target.value;
+                        if (!isAnimated) drawStatic();
+                    });
+
+                    textInput.addEventListener('input', (e) => {
+                        let val = e.target.value;
+                        if(val.length === 7 && val.startsWith('#')) {
+                            colors[i] = val; colorInput.value = val;
+                            if (!isAnimated) drawStatic();
+                        }
+                    });
+
+                    div.appendChild(colorInput); div.appendChild(textInput);
+                    pickersContainer.appendChild(div);
+                }
+                if (!isAnimated) drawStatic();
+            }
+
+            // Listeners de Conteo de Colores
+            [2, 4, 6, 8].forEach(num => {
+                document.getElementById(`lbl-c${num}`).addEventListener('click', function() {
+                    activeCount = num;
+                    document.querySelectorAll('#sec-colors .count-grid .radio-label').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    renderPickers();
+                });
+            });
+
+            // Tipo de Gradiente
+            document.getElementById('btn-linear').addEventListener('click', function() {
+                type = 'linear'; this.classList.add('active'); document.getElementById('btn-radial').classList.remove('active');
+                if (!isAnimated) drawStatic();
+            });
+            document.getElementById('btn-radial').addEventListener('click', function() {
+                type = 'radial'; this.classList.add('active'); document.getElementById('btn-linear').classList.remove('active');
+                if (!isAnimated) drawStatic();
+            });
+
+            // Sliders e Inputs
+            document.getElementById('angleInput').addEventListener('input', (e) => { angle = e.target.value; if(!isAnimated) drawStatic(); });
+            document.getElementById('blendSlider').addEventListener('input', (e) => { blend = e.target.value; if(!isAnimated) drawStatic(); });
+            document.getElementById('sizeSlider').addEventListener('input', (e) => { size = e.target.value; if(!isAnimated) drawStatic(); });
+
+            // Aspect Ratios
+            ['16-9', '3-4', '9-16'].forEach(r => {
+                document.getElementById('r-' + r).addEventListener('click', function() {
+                    if (isFullBleed) return;
+                    visualizer.className = 'visualizer ratio-' + r;
+                    document.querySelectorAll('#sec-ratio .radio-label').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    setTimeout(resize, 50);
+                });
+            });
+
+            // Full Bleed (Escala)
+            let isFullBleed = false;
+            document.getElementById('btnScale').addEventListener('click', () => {
+                isFullBleed = !isFullBleed;
+                visualizer.classList.toggle('full-bleed-mode', isFullBleed);
+                document.getElementById('visContainer').style.padding = isFullBleed ? '0' : '40px';
+                document.getElementById('btnScale').textContent = isFullBleed ? '✕' : '⤢';
+                setTimeout(resize, 60);
+            });
+
+            // Control de Animación Líquida
+            document.getElementById('btn-anim-on').addEventListener('click', () => toggleAnimation(true));
+            document.getElementById('btn-anim-off').addEventListener('click', () => toggleAnimation(false));
+
+            function toggleAnimation(enable) {
+                isAnimated = enable;
+                document.getElementById('btn-anim-on').classList.toggle('active', enable);
+                document.getElementById('btn-anim-off').classList.toggle('active', !enable);
+                document.getElementById('staticGradTypes').style.opacity = enable ? '0.3' : '1';
+                document.getElementById('staticGradTypes').style.pointerEvents = enable ? 'none' : 'auto';
+
+                if (enable) {
+                    blurWrapper.classList.add('liquid-mode');
+                    initFluidNodes(); loopFluid();
+                } else {
+                    blurWrapper.classList.remove('liquid-mode');
+                    cancelAnimationFrame(animationFrameId); drawStatic();
+                }
+            }
+
+            // Motores gráficos (Static y Fluid)
+            function drawStatic() {
+                if(!canvas || !ctx || !canvas.width || isAnimated) return;
+                ctx.clearRect(0,0,canvas.width, canvas.height);
+                let grad; const sMult = size/100;
+
+                if(type === 'linear') {
+                    const rad = (angle * Math.PI) / 180; const r = (Math.sqrt(canvas.width**2 + canvas.height**2) / 2) * sMult;
+                    grad = ctx.createLinearGradient(canvas.width/2 - r*Math.cos(rad), canvas.height/2 - r*Math.sin(rad), canvas.width/2 + r*Math.cos(rad), canvas.height/2 + r*Math.sin(rad));
+                } else {
+                    grad = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, Math.max(canvas.width, canvas.height)*0.6*sMult);
+                }
+
+                for(let i=0; i<activeCount; i++) {
+                    let stop = i/(activeCount-1);
+                    if(i > 0 && i < activeCount-1) stop += (blend/100) * (i < activeCount/2 ? 0.2 : -0.2);
+                    grad.addColorStop(Math.max(0, Math.min(1, stop)), colors[i]);
+                }
+                ctx.fillStyle = grad; ctx.fillRect(0,0,canvas.width, canvas.height);
+                if(codeText) codeText.innerText = `${type}-gradient(${angle}deg, ${colors[0]}, ${colors[activeCount-1]})`;
+            }
+
+            function loopFluid() {
+                if (!isAnimated || !ctx || !canvas) return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = colors[0] + "1a"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.globalCompositeOperation = 'screen';
+
+                const baseRadius = Math.max(canvas.width, canvas.height) * (0.4 + (blend / 50) * 0.3) * (size / 100);
+
+                for (let i = 0; i < activeCount; i++) {
+                    let node = nodes[i]; if(!node) continue;
+                    node.x += node.vx; node.y += node.vy;
+                    if (node.x < -10 || node.x > 110) node.vx *= -1;
+                    if (node.y < -10 || node.y > 110) node.vy *= -1;
+
+                    let px = (node.x / 100) * canvas.width; let py = (node.y / 100) * canvas.height;
+                    let particleGrad = ctx.createRadialGradient(px, py, 0, px, py, baseRadius);
+                    particleGrad.addColorStop(0, colors[i]); particleGrad.addColorStop(1, 'transparent');
+                    ctx.fillStyle = particleGrad; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                }
+                ctx.globalCompositeOperation = 'source-over';
+                if(codeText) codeText.innerText = `animated-mesh-gradient(${activeCount} colors)`;
+                animationFrameId = requestAnimationFrame(loopFluid);
+            }
+
+            // Acciones globales (Randomize, Reset, Download)
+            document.getElementById('btnLucky').addEventListener('click', () => {
+                for(let i=0; i<activeCount; i++) {
+                    colors[i] = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+                }
+                angle = Math.floor(Math.random()*360);
+                document.getElementById('angleInput').value = angle;
+                if(isAnimated) initFluidNodes();
+                renderPickers();
+            });
+
+            document.getElementById('btnReset').addEventListener('click', () => {
+                colors = [...defaultColors]; activeCount = 4; type = 'linear'; angle = 0; blend = 0; size = 100;
+                document.getElementById('blendSlider').value = 0; document.getElementById('sizeSlider').value = 100; document.getElementById('angleInput').value = 0;
+                
+                document.querySelectorAll('#sec-colors .count-grid .radio-label').forEach(b => b.classList.remove('active'));
+                document.getElementById('lbl-c4').classList.add('active');
+                type = 'linear'; document.getElementById('btn-linear').classList.add('active'); document.getElementById('btn-radial').classList.remove('active');
+                
+                toggleAnimation(false); renderPickers();
+            });
+
+            document.getElementById('btnDownload').addEventListener('click', () => {
+                if(!canvas) return;
+                const link = document.createElement('a'); link.download = 'gradient-aura-fluid.png';
+                link.href = canvas.toDataURL(); link.click();
+            });
+
+            function resize() {
+                if (!canvas || !visualizer) return;
+                canvas.width = visualizer.clientWidth || 800; canvas.height = visualizer.clientHeight || 450;
+                if (!isAnimated) drawStatic();
+            }
+
+            window.addEventListener('resize', resize);
+            renderPickers();
+            resize();
+        });
+    </script>
+</body>
+</html>
