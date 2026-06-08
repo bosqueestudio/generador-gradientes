@@ -6,10 +6,10 @@
     <title>Organic Blob Generator OS</title>
     <style>
         :root {
-            --bg-dark: #0d0d0d;
-            --panel-bg: #1a1a1a;
+            --bg-dark: #0a0a0a;
+            --panel-bg: #141414;
             --text-light: #ffffff;
-            --border-color: #333333;
+            --border-color: #262626;
         }
 
         * {
@@ -36,14 +36,15 @@
             padding: 25px 20px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 18px;
             z-index: 10;
             overflow-y: auto;
             flex-shrink: 0;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
         }
 
         h2 {
-            font-size: 1.1rem;
+            font-size: 1rem;
             text-transform: uppercase;
             letter-spacing: 1.5px;
             margin: 0 0 5px 0;
@@ -65,10 +66,10 @@
         }
 
         label {
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             font-weight: bold;
             text-transform: uppercase;
-            color: #888;
+            color: #777;
         }
 
         .label-val {
@@ -78,9 +79,9 @@
         }
 
         .label-val span {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #fff;
-            background: #333;
+            background: #262626;
             padding: 2px 6px;
             border-radius: 3px;
         }
@@ -88,9 +89,9 @@
         select, input[type="color"], button, input[type="range"] {
             width: 100%;
             padding: 10px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             border: 1px solid var(--border-color);
-            background: #222;
+            background: #1a1a1a;
             color: #fff;
             cursor: pointer;
             outline: none;
@@ -98,8 +99,8 @@
         }
 
         select:hover, button:hover {
-            background: #2a2a2a;
-            border-color: #555;
+            background: #262626;
+            border-color: #444;
         }
 
         input[type="color"] {
@@ -110,7 +111,7 @@
 
         input[type="range"] {
             -webkit-appearance: none;
-            background: #222;
+            background: #1a1a1a;
             padding: 5px 0;
             cursor: pointer;
         }
@@ -135,10 +136,10 @@
         .radio-label {
             display: block;
             text-align: center;
-            background: #222;
+            background: #1a1a1a;
             padding: 10px;
             border: 1px solid var(--border-color);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             cursor: pointer;
             text-transform: uppercase;
         }
@@ -150,8 +151,8 @@
             border-color: #fff;
         }
 
-        .btn-clear { color: #ff5555; border-color: #552222; }
-        .btn-clear:hover { background: #331111; }
+        .btn-clear { color: #ff5555; border-color: #3d1a1a; }
+        .btn-clear:hover { background: #291212; }
         
         .btn-action { background: #ffffff; color: #000000; font-weight: bold; text-transform: uppercase; margin-top: auto; }
         .btn-action:hover { background: #dddddd; }
@@ -159,28 +160,35 @@
         .btn-anim { background: #007bff; color: white; font-weight: bold; text-transform: uppercase;}
         .btn-anim:hover { background: #0056b3; }
 
-        /* CANVAS AREA WITH FIXED ASPECT RATIOS */
-        .canvas-container {
+        /* ESPACIO DE TRABAJO CON TEXTURA DE PUNTOS OBSCURA */
+        .workspace-container {
             flex-grow: 1;
             height: 100%;
-            background: #050505; /* Fondo exterior más oscuro para notar los límites del canvas */
+            background-color: var(--bg-dark);
+            /* Patrón CSS matemático para simular un grid de puntos tipo figma/software */
+            background-image: radial-gradient(#262626 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
-            padding: 40px;
+            padding: 60px;
         }
 
-        .canvas-wrapper {
+        /* LIENZO BLANCO CENTRALIZADO Y PROPORCIONADO */
+        .canvas-artboard {
             position: relative;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            border: 1px solid #222;
-            transition: width 0.3s ease, height 0.3s ease;
+            background: #ffffff; /* LIENZO ESTRICTAMENTE BLANCO */
+            box-shadow: 0 25px 70px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1), height 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            overflow: hidden;
         }
 
         canvas {
             display: block;
-            background: var(--bg-dark);
+            width: 100%;
+            height: 100%;
             cursor: crosshair;
         }
 
@@ -188,8 +196,8 @@
             position: absolute;
             bottom: 20px;
             right: 20px;
-            font-size: 0.75rem;
-            color: #555;
+            font-size: 0.7rem;
+            color: #444;
             pointer-events: none;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -278,7 +286,7 @@
             <input type="range" id="brush-clumsy-slider" min="1" max="3" step="1" value="2" oninput="updateClumsyLabel(this.value)">
         </div>
 
-        <hr style="border:0; border-top: 1px solid var(--border-color); width:100%; margin: 5px 0;">
+        <hr style="border:0; border-top: 1px solid var(--border-color); width:100%; margin: 3px 0;">
 
         <button class="btn-clear" onclick="clearCanvas()">Clear Canvas</button>
         <button class="btn-anim" onclick="playDrawingAnimation()">▶ Re-Animate Trazo</button>
@@ -286,11 +294,11 @@
         <button class="btn-action" onclick="saveAsset()">Save Asset (.PNG)</button>
     </div>
 
-    <div class="canvas-container" id="canvas-holder">
-        <div class="canvas-wrapper" id="canvas-wrapper">
+    <div class="workspace-container" id="canvas-holder">
+        <div class="canvas-artboard" id="canvas-wrapper">
             <canvas id="paintCanvas"></canvas>
         </div>
-        <div class="status-info" id="status-text">Dark Canvas Active</div>
+        <div class="status-info" id="status-text">Workspace Grid Engaged</div>
     </div>
 
     <script>
@@ -305,18 +313,17 @@
         let clumsyX = 0;
         let clumsyY = 0;
 
-        // MANEJO DINÁMICO DE RESOLUCIÓN EN TIEMPO REAL
+        // SISTEMA DE CALIBRACIÓN DE FORMATOS Y RESOLUCIONES EN TIEMPO REAL
         function updateCanvasFormat() {
             const activeRatio = document.querySelector('input[name="aspect-ratio"]:checked').value;
             
-            // Medidas máximas del contenedor restando márgenes de la UI
-            const maxW = container.clientWidth - 80;
-            const maxH = container.clientHeight - 80;
+            // Calculamos el espacio disponible dinámico restando los paddings
+            const maxW = container.clientWidth - 120;
+            const maxH = container.clientHeight - 120;
 
             let targetW, targetH;
 
             if (activeRatio === "16:9") {
-                // Forzar proporciones HD horizontales nativas en viewport
                 targetW = maxW;
                 targetH = maxW * (9 / 16);
                 if (targetH > maxH) {
@@ -324,7 +331,6 @@
                     targetW = maxH * (16 / 9);
                 }
             } else {
-                // Forzar proporciones verticales 3:5 nativas en viewport
                 targetH = maxH;
                 targetW = maxH * (3 / 5);
                 if (targetW > maxW) {
@@ -333,11 +339,11 @@
                 }
             }
 
-            // Ajustar tamaño del wrapper visual CSS
+            // Cambiar tamaño del Artboard blanco flotante en la pantalla
             wrapper.style.width = `${targetW}px`;
             wrapper.style.height = `${targetH}px`;
 
-            // Configurar el Canvas interno con la resolución nativa de exportación limpia
+            // Configurar el Canvas con la resolución real de exportación nativa
             canvas.width = (activeRatio === "16:9") ? 1920 : 1080;
             canvas.height = (activeRatio === "16:9") ? 1080 : 1350;
 
@@ -350,8 +356,9 @@
             setTimeout(updateCanvasFormat, 150);
         });
 
+        // RE-DISEÑADO: Ahora limpia el lienzo pintándolo de color BLANCO sólido
         function resetCanvasBackground(context, width, height) {
-            context.fillStyle = "#0d0d0d"; 
+            context.fillStyle = "#ffffff"; 
             context.fillRect(0, 0, width, height);
         }
 
@@ -371,15 +378,16 @@
                 context.filter = `blur(${size * 0.12}px)`;
             }
 
+            // Cambiado a un gris/negro fino para el stroke de alta resolución sobre fondo blanco
             context.strokeStyle = '#000000';
-            context.lineWidth = 1.5; // Ajustado proporcionalmente para alta resolución (1920/1080)
+            context.lineWidth = 1.5; 
 
-            // Echo 2
+            // Capa 2
             context.fillStyle = cEcho2;
             renderSingleGeom(context, x, y, shape, size * 1.3);
             if (useStroke) context.stroke();
 
-            // Echo 1
+            // Capa 1
             context.fillStyle = cEcho1;
             renderSingleGeom(context, x, y, shape, size * 1.15);
             if (useStroke) context.stroke();
@@ -414,7 +422,6 @@
             const clumsyFactor = clumsyFactors[clumsySliderVal - 1];
 
             const percentScale = parseInt(document.getElementById('pixel-scale-slider').value);
-            // El tamaño se calcula directamente relativo a la alta resolución nativa
             const calculatedSize = (percentScale / 100) * 180; 
 
             const strokeSetting = document.querySelector('input[name="stroke-option"]:checked').value === 'on';
@@ -448,8 +455,8 @@
             drawEchos(ctx, pointData.x, pointData.y, pointData.shape, pointData.size, pointData.cCenter, pointData.cEcho1, pointData.cEcho2, pointData.stroke, pointData.blur);
         }
 
-        // Traduce coordenadas físicas de pantalla a la rejilla de alta resolución del Canvas
-        getCanvasCoords = (e) => {
+        // Traduce posiciones del mouse relativas a la proporción real del canvas escalado
+        function getCanvasCoords(e) {
             const rect = canvas.getBoundingClientRect();
             let clientX = e.clientX;
             let clientY = e.clientY;
@@ -459,7 +466,6 @@
                 clientY = e.touches[0].clientY;
             }
 
-            // Regla de tres para mapear la posición real en base a la escala del lienzo estirado por CSS
             return {
                 x: ((clientX - rect.left) / rect.width) * canvas.width,
                 y: ((clientY - rect.top) / rect.height) * canvas.height
@@ -537,10 +543,9 @@
             requestAnimationFrame(animateLoop);
         }
 
-        // GUARDADO DE IMAGEN PNG DIRECTO SEGÚN EL FORMATO CONFIGURADO
         function saveAsset() {
             if (strokeHistory.length === 0) {
-                alert("Lienzo vacío.");
+                alert("Canvas is empty!");
                 return;
             }
 
@@ -549,8 +554,7 @@
 
             const link = document.createElement('a');
             link.download = `asset-master-${formatName}-${Date.now()}.png`;
-            // Exporta directamente la matriz nativa (1920x1080 o 1080x1350) limpia sin pérdida de pixeles
-            link.href = canvas.toToDataURL ? canvas.toDataURL('image/png') : canvas.toDataURL();
+            link.href = canvas.toDataURL('image/png');
             link.click();
         }
 
