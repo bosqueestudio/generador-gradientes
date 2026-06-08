@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Organic Blob Generator OS</title>
+    <title>Organic Blob Generator OS - Pro Workflow</title>
     <style>
         :root {
             --bg-dark: #0a0a0a;
             --panel-bg: #141414;
             --text-light: #ffffff;
             --border-color: #262626;
+            --accent-blue: #007bff;
         }
 
         * {
@@ -59,10 +60,18 @@
             gap: 6px;
         }
 
+        /* ESTADO DESHABILITADO INICIAL */
+        .disabled-state {
+            opacity: 0.25;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
         .color-pickers {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 5px;
+            padding-top: 5px;
         }
 
         label {
@@ -78,12 +87,20 @@
             align-items: center;
         }
 
-        .label-val span {
-            font-size: 0.7rem;
+        /* INPUT HÍBRIDO (TEXTO + SLIDER) */
+        .scale-inputs {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .scale-inputs input[type="number"] {
+            width: 65px;
+            padding: 8px;
+            background: #1a1a1a;
+            border: 1px solid var(--border-color);
             color: #fff;
-            background: #262626;
-            padding: 2px 6px;
-            border-radius: 3px;
+            text-align: center;
+            font-size: 0.85rem;
         }
 
         select, input[type="color"], button, input[type="range"] {
@@ -129,6 +146,13 @@
             gap: 5px;
         }
 
+        /* GRID DE SHAPES ABIERTO */
+        .shapes-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+        }
+
         .radio-btn {
             display: none;
         }
@@ -139,7 +163,7 @@
             background: #1a1a1a;
             padding: 10px;
             border: 1px solid var(--border-color);
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             cursor: pointer;
             text-transform: uppercase;
         }
@@ -151,6 +175,34 @@
             border-color: #fff;
         }
 
+        /* MENÚ ACOPLABLE (COLLAPSIBLE PANEL) */
+        .collapse-btn {
+            background: #1a1a1a;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #777;
+            border: 1px solid var(--border-color);
+            padding: 10px;
+        }
+        .collapse-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background: #111;
+            border: 1px solid transparent;
+            padding: 0 10px;
+        }
+        .collapse-content.open {
+            max-height: 100px;
+            padding: 10px;
+            border-color: var(--border-color);
+        }
+
         .btn-clear { color: #ff5555; border-color: #3d1a1a; }
         .btn-clear:hover { background: #291212; }
         
@@ -160,12 +212,11 @@
         .btn-anim { background: #007bff; color: white; font-weight: bold; text-transform: uppercase;}
         .btn-anim:hover { background: #0056b3; }
 
-        /* ESPACIO DE TRABAJO CON TEXTURA DE PUNTOS OBSCURA */
+        /* WORKSPACE WITH DOT GRID PATTERN */
         .workspace-container {
             flex-grow: 1;
             height: 100%;
             background-color: var(--bg-dark);
-            /* Patrón CSS matemático para simular un grid de puntos tipo figma/software */
             background-image: radial-gradient(#262626 1.5px, transparent 1.5px);
             background-size: 24px 24px;
             display: flex;
@@ -175,14 +226,15 @@
             padding: 60px;
         }
 
-        /* LIENZO BLANCO CENTRALIZADO Y PROPORCIONADO */
+        /* FLOATING WHITE ARTBOARD */
         .canvas-artboard {
             position: relative;
-            background: #ffffff; /* LIENZO ESTRICTAMENTE BLANCO */
+            background: #ffffff; 
             box-shadow: 0 25px 70px rgba(0,0,0,0.6);
             border: 1px solid rgba(255,255,255,0.05);
             transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1), height 0.3s cubic-bezier(0.25, 1, 0.5, 1);
             overflow: hidden;
+            display: none; /* Oculto al inicio hasta elegir formato */
         }
 
         canvas {
@@ -203,6 +255,17 @@
             letter-spacing: 1px;
             z-index: 5;
         }
+
+        /* Cartel de aviso inicial UI */
+        .welcome-msg {
+            position: absolute;
+            color: #555;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            pointer-events: none;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -211,94 +274,109 @@
         <h2>Blob Generator OS</h2>
         
         <div class="tool-group">
-            <label>Canvas Aspect Ratio</label>
+            <label style="color: var(--accent-blue);">1. Select Canvas Format</label>
             <div class="radio-group">
-                <input type="radio" name="aspect-ratio" id="ratio-horizontal" value="16:9" checked class="radio-btn" onchange="updateCanvasFormat()">
+                <input type="radio" name="aspect-ratio" id="ratio-horizontal" value="16:9" class="radio-btn" onchange="unlockAndFormatCanvas()">
                 <label for="ratio-horizontal" class="radio-label">Horizontal (16:9)</label>
                 
-                <input type="radio" name="aspect-ratio" id="ratio-vertical" value="3:5" class="radio-btn" onchange="updateCanvasFormat()">
+                <input type="radio" name="aspect-ratio" id="ratio-vertical" value="3:5" class="radio-btn" onchange="unlockAndFormatCanvas()">
                 <label for="ratio-vertical" class="radio-label">Vertical (3:5)</label>
             </div>
         </div>
 
-        <div class="tool-group">
-            <label>Pixel Shape</label>
-            <select id="pixel-shape">
-                <option value="circle">Circle</option>
-                <option value="square">Square</option>
-                <option value="diamond">Diamond</option>
-            </select>
-        </div>
-
-        <div class="tool-group">
-            <label>Color Combination</label>
-            <div class="color-pickers">
-                <div>
-                    <label style="font-size:10px;">Center</label>
-                    <input type="color" id="color-center" value="#f4f3b6">
-                </div>
-                <div>
-                    <label style="font-size:10px;">Echo 1</label>
-                    <input type="color" id="color-echo1" value="#e3a7fd">
-                </div>
-                <div>
-                    <label style="font-size:10px;">Echo 2</label>
-                    <input type="color" id="color-echo2" value="#9ef8db">
+        <div id="dynamic-tools" class="disabled-state" style="display: flex; flex-direction: column; gap: 18px; height: 100%;">
+            
+            <div class="tool-group">
+                <label>2. Pixel Shape</label>
+                <div class="shapes-grid">
+                    <input type="radio" name="pixel-shape" id="shape-circle" value="circle" checked class="radio-btn">
+                    <label for="shape-circle" class="radio-label">Circle</label>
+                    
+                    <input type="radio" name="pixel-shape" id="shape-square" value="square" class="radio-btn">
+                    <label for="shape-square" class="radio-label">Square</label>
+                    
+                    <input type="radio" name="pixel-shape" id="shape-diamond" value="diamond" class="radio-btn">
+                    <label for="shape-diamond" class="radio-label">Diamond</label>
                 </div>
             </div>
-        </div>
 
-        <div class="tool-group">
-            <label>Color Fusion (Blur)</label>
-            <div class="radio-group">
-                <input type="radio" name="color-fusion" id="fusion-off" value="off" checked class="radio-btn">
-                <label for="fusion-off" class="radio-label">Sharp</label>
-                
-                <input type="radio" name="color-fusion" id="fusion-on" value="on" class="radio-btn">
-                <label for="fusion-on" class="radio-label">Fused</label>
+            <div class="tool-group">
+                <label>3. Styling</label>
+                <button class="collapse-btn" onclick="toggleColorPanel()">
+                    Color Combination <span id="collapse-arrow">▼</span>
+                </button>
+                <div class="collapse-content" id="color-panel">
+                    <div class="color-pickers">
+                        <div>
+                            <label style="font-size:9px;">Center</label>
+                            <input type="color" id="color-center" value="#f4f3b6">
+                        </div>
+                        <div>
+                            <label style="font-size:9px;">Echo 1</label>
+                            <input type="color" id="color-echo1" value="#e3a7fd">
+                        </div>
+                        <div>
+                            <label style="font-size:9px;">Echo 2</label>
+                            <input type="color" id="color-echo2" value="#9ef8db">
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <div class="tool-group">
-            <label>Brush Stroke</label>
-            <div class="radio-group">
-                <input type="radio" name="stroke-option" id="stroke-on" value="on" checked class="radio-btn">
-                <label for="stroke-on" class="radio-label">With Stroke</label>
-                
-                <input type="radio" name="stroke-option" id="stroke-off" value="off" class="radio-btn">
-                <label for="stroke-off" class="radio-label">No Stroke</label>
+            <div class="tool-group">
+                <label>Color Fusion (Blur)</label>
+                <div class="radio-group">
+                    <input type="radio" name="color-fusion" id="fusion-off" value="off" checked class="radio-btn">
+                    <label for="fusion-off" class="radio-label">Sharp</label>
+                    
+                    <input type="radio" name="color-fusion" id="fusion-on" value="on" class="radio-btn">
+                    <label for="fusion-on" class="radio-label">Fused</label>
+                </div>
             </div>
-        </div>
 
-        <div class="tool-group">
-            <div class="label-val">
-                <label>Brush Scale</label>
-                <span id="scale-val">60%</span>
+            <div class="tool-group">
+                <label>Brush Stroke</label>
+                <div class="radio-group">
+                    <input type="radio" name="stroke-option" id="stroke-on" value="on" checked class="radio-btn">
+                    <label for="stroke-on" class="radio-label">With Stroke</label>
+                    
+                    <input type="radio" name="stroke-option" id="stroke-off" value="off" class="radio-btn">
+                    <label for="stroke-off" class="radio-label">No Stroke</label>
+                </div>
             </div>
-            <input type="range" id="pixel-scale-slider" min="10" max="100" step="10" value="60" oninput="updateScaleLabel(this.value)">
-        </div>
 
-        <div class="tool-group">
-            <div class="label-val">
-                <label>Imperfect Behavior</label>
-                <span id="clumsy-val">Organic</span>
+            <div class="tool-group">
+                <label>Brush Scale (%)</label>
+                <div class="scale-inputs">
+                    <input type="range" id="pixel-scale-slider" min="10" max="100" step="10" value="60" oninput="syncScaleFromSlider(this.value)">
+                    <input type="number" id="pixel-scale-number" min="10" max="100" step="10" value="60" onchange="syncScaleFromInput(this.value)">
+                </div>
             </div>
-            <input type="range" id="brush-clumsy-slider" min="1" max="3" step="1" value="2" oninput="updateClumsyLabel(this.value)">
+
+            <div class="tool-group">
+                <div class="label-val">
+                    <label>Imperfect Behavior</label>
+                    <span id="clumsy-val" style="font-size: 11px; color:#aaa;">Organic</span>
+                </div>
+                <input type="range" id="brush-clumsy-slider" min="1" max="3" step="1" value="2" oninput="updateClumsyLabel(this.value)">
+            </div>
+
+            <hr style="border:0; border-top: 1px solid var(--border-color); width:100%; margin: 3px 0;">
+
+            <button class="btn-clear" onclick="clearCanvas()">Clear Canvas</button>
+            <button class="btn-anim" onclick="playDrawingAnimation()">▶ Re-Animate Trazo</button>
+            
+            <button class="btn-action" onclick="saveAsset()">Save Asset (.PNG)</button>
         </div>
-
-        <hr style="border:0; border-top: 1px solid var(--border-color); width:100%; margin: 3px 0;">
-
-        <button class="btn-clear" onclick="clearCanvas()">Clear Canvas</button>
-        <button class="btn-anim" onclick="playDrawingAnimation()">▶ Re-Animate Trazo</button>
-        
-        <button class="btn-action" onclick="saveAsset()">Save Asset (.PNG)</button>
     </div>
 
     <div class="workspace-container" id="canvas-holder">
+        <div class="welcome-msg" id="welcome-text">◄ Please select a canvas format to begin</div>
+        
         <div class="canvas-artboard" id="canvas-wrapper">
             <canvas id="paintCanvas"></canvas>
         </div>
-        <div class="status-info" id="status-text">Workspace Grid Engaged</div>
+        <div class="status-info" id="status-text">System Idle</div>
     </div>
 
     <script>
@@ -309,41 +387,44 @@
 
         let strokeHistory = []; 
         let isDrawing = false;
+        let canvasUnlocked = false;
 
-        let clumsyX = 0;
-        let clumsyY = 0;
+        let clumsyX = 0; let clumsyY = 0;
 
-        // SISTEMA DE CALIBRACIÓN DE FORMATOS Y RESOLUCIONES EN TIEMPO REAL
-        function updateCanvasFormat() {
-            const activeRatio = document.querySelector('input[name="aspect-ratio"]:checked').value;
+        // ACTIVACIÓN DE LA INTERFAZ TRAS ELEGIR EL FORMATO
+        function unlockAndFormatCanvas() {
+            canvasUnlocked = true;
             
-            // Calculamos el espacio disponible dinámico restando los paddings
+            // Quitar bloqueo visual del panel de herramientas
+            document.getElementById('dynamic-tools').classList.remove('disabled-state');
+            // Mostrar el canvas e instruir la limpieza del texto de bienvenida
+            wrapper.style.display = 'block';
+            document.getElementById('welcome-text').style.display = 'none';
+            document.getElementById('status-text').innerText = "Workspace Grid Engaged";
+
+            updateCanvasFormat();
+        }
+
+        function updateCanvasFormat() {
+            if (!canvasUnlocked) return;
+
+            const activeRatio = document.querySelector('input[name="aspect-ratio"]:checked').value;
             const maxW = container.clientWidth - 120;
             const maxH = container.clientHeight - 120;
 
             let targetW, targetH;
 
             if (activeRatio === "16:9") {
-                targetW = maxW;
-                targetH = maxW * (9 / 16);
-                if (targetH > maxH) {
-                    targetH = maxH;
-                    targetW = maxH * (16 / 9);
-                }
+                targetW = maxW; targetH = maxW * (9 / 16);
+                if (targetH > maxH) { targetH = maxH; targetW = maxH * (16 / 9); }
             } else {
-                targetH = maxH;
-                targetW = maxH * (3 / 5);
-                if (targetW > maxW) {
-                    targetW = maxW;
-                    targetH = maxW * (5 / 3);
-                }
+                targetH = maxH; targetW = maxH * (3 / 5);
+                if (targetW > maxW) { targetW = maxW; targetH = maxW * (5 / 3); }
             }
 
-            // Cambiar tamaño del Artboard blanco flotante en la pantalla
             wrapper.style.width = `${targetW}px`;
             wrapper.style.height = `${targetH}px`;
 
-            // Configurar el Canvas con la resolución real de exportación nativa
             canvas.width = (activeRatio === "16:9") ? 1920 : 1080;
             canvas.height = (activeRatio === "16:9") ? 1080 : 1350;
 
@@ -352,18 +433,34 @@
         }
 
         window.addEventListener('resize', updateCanvasFormat);
-        window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(updateCanvasFormat, 150);
-        });
 
-        // RE-DISEÑADO: Ahora limpia el lienzo pintándolo de color BLANCO sólido
         function resetCanvasBackground(context, width, height) {
             context.fillStyle = "#ffffff"; 
             context.fillRect(0, 0, width, height);
         }
 
-        function updateScaleLabel(val) {
-            document.getElementById('scale-val').innerText = val + '%';
+        // LÓGICA DE ACOPLAMIENTO DE COLOR (COLLAPSIBLE)
+        function toggleColorPanel() {
+            const panel = document.getElementById('color-panel');
+            const arrow = document.getElementById('collapse-arrow');
+            if (panel.classList.contains('open')) {
+                panel.classList.remove('open');
+                arrow.innerText = "▼";
+            } else {
+                panel.classList.add('open');
+                arrow.innerText = "▲";
+            }
+        }
+
+        // SINCRONIZACIÓN HÍBRIDA DE BRUSH SCALE (SLIDER <-> INPUT NUMÉRICO)
+        function syncScaleFromSlider(val) {
+            document.getElementById('pixel-scale-number').value = val;
+        }
+        function syncScaleFromInput(val) {
+            // Forzar límites y múltiplos de 10 por consistencia en la UX
+            let sanitized = Math.min(Math.max(Math.round(val / 10) * 10, 10), 100);
+            document.getElementById('pixel-scale-number').value = sanitized;
+            document.getElementById('pixel-scale-slider').value = sanitized;
         }
 
         function updateClumsyLabel(val) {
@@ -373,26 +470,19 @@
 
         function drawEchos(context, x, y, shape, size, cCenter, cEcho1, cEcho2, useStroke, useBlur) {
             context.save();
+            if(useBlur) context.filter = `blur(${size * 0.12}px)`;
             
-            if(useBlur) {
-                context.filter = `blur(${size * 0.12}px)`;
-            }
-
-            // Cambiado a un gris/negro fino para el stroke de alta resolución sobre fondo blanco
             context.strokeStyle = '#000000';
             context.lineWidth = 1.5; 
 
-            // Capa 2
             context.fillStyle = cEcho2;
             renderSingleGeom(context, x, y, shape, size * 1.3);
             if (useStroke) context.stroke();
 
-            // Capa 1
             context.fillStyle = cEcho1;
             renderSingleGeom(context, x, y, shape, size * 1.15);
             if (useStroke) context.stroke();
 
-            // Centro
             context.fillStyle = cCenter;
             renderSingleGeom(context, x, y, shape, size);
             if (useStroke) context.stroke();
@@ -402,21 +492,19 @@
 
         function renderSingleGeom(context, x, y, shape, size) {
             context.beginPath();
-            if (shape === 'circle') {
-                context.arc(x, y, size / 2, 0, Math.PI * 2);
-            } else if (shape === 'square') {
-                context.rect(x - size / 2, y - size / 2, size, size);
-            } else if (shape === 'diamond') {
-                context.moveTo(x, y - size / 2);
-                context.lineTo(x + size / 2, y);
-                context.lineTo(x, y + size / 2);
-                context.lineTo(x - size / 2, y);
+            if (shape === 'circle') context.arc(x, y, size / 2, 0, Math.PI * 2);
+            else if (shape === 'square') context.rect(x - size / 2, y - size / 2, size, size);
+            else if (shape === 'diamond') {
+                context.moveTo(x, y - size / 2); context.lineTo(x + size / 2, y);
+                context.lineTo(x, y + size / 2); context.lineTo(x - size / 2, y);
                 context.closePath();
             }
             context.fill();
         }
 
         function addStrokePoint(rawX, rawY, isNewNode = false) {
+            if (!canvasUnlocked) return;
+
             const clumsySliderVal = parseInt(document.getElementById('brush-clumsy-slider').value);
             const clumsyFactors = [0.15, 0.45, 0.85];
             const clumsyFactor = clumsyFactors[clumsySliderVal - 1];
@@ -426,46 +514,34 @@
 
             const strokeSetting = document.querySelector('input[name="stroke-option"]:checked').value === 'on';
             const fusionSetting = document.querySelector('input[name="color-fusion"]:checked').value === 'on';
+            const activeShape = document.querySelector('input[name="pixel-shape"]:checked').value;
 
             if (isNewNode) {
-                clumsyX = rawX;
-                clumsyY = rawY;
+                clumsyX = rawX; clumsyY = rawY;
             } else {
-                clumsyX += (rawX - clumsyX) * 0.25;
-                clumsyY += (rawY - clumsyY) * 0.25;
-
+                clumsyX += (rawX - clumsyX) * 0.25; clumsyY += (rawY - clumsyY) * 0.25;
                 const jitter = (calculatedSize * clumsyFactor) * 0.05;
-                clumsyX += (Math.random() - 0.5) * jitter;
-                clumsyY += (Math.random() - 0.5) * jitter;
+                clumsyX += (Math.random() - 0.5) * jitter; clumsyY += (Math.random() - 0.5) * jitter;
             }
 
             const pointData = {
-                x: clumsyX,
-                y: clumsyY,
-                shape: document.getElementById('pixel-shape').value,
-                size: calculatedSize,
+                x: clumsyX, y: clumsyY, shape: activeShape, size: calculatedSize,
                 cCenter: document.getElementById('color-center').value,
                 cEcho1: document.getElementById('color-echo1').value,
                 cEcho2: document.getElementById('color-echo2').value,
-                stroke: strokeSetting,
-                blur: fusionSetting
+                stroke: strokeSetting, blur: fusionSetting
             };
 
             strokeHistory.push(pointData);
             drawEchos(ctx, pointData.x, pointData.y, pointData.shape, pointData.size, pointData.cCenter, pointData.cEcho1, pointData.cEcho2, pointData.stroke, pointData.blur);
         }
 
-        // Traduce posiciones del mouse relativas a la proporción real del canvas escalado
         function getCanvasCoords(e) {
             const rect = canvas.getBoundingClientRect();
-            let clientX = e.clientX;
-            let clientY = e.clientY;
-
+            let clientX = e.clientX; let clientY = e.clientY;
             if (e.touches && e.touches.length > 0) {
-                clientX = e.touches[0].clientX;
-                clientY = e.touches[0].clientY;
+                clientX = e.touches[0].clientX; clientY = e.touches[0].clientY;
             }
-
             return {
                 x: ((clientX - rect.left) / rect.width) * canvas.width,
                 y: ((clientY - rect.top) / rect.height) * canvas.height
@@ -473,6 +549,7 @@
         }
 
         function handleStart(e) {
+            if (!canvasUnlocked) return;
             isDrawing = true;
             const coords = getCanvasCoords(e);
             addStrokePoint(coords.x, coords.y, true);
@@ -496,6 +573,7 @@
         canvas.addEventListener('touchend', handleEnd);
 
         function redrawFromHistory() {
+            if (!canvasUnlocked) return;
             resetCanvasBackground(ctx, canvas.width, canvas.height);
             for(let pt of strokeHistory) {
                 drawEchos(ctx, pt.x, pt.y, pt.shape, pt.size, pt.cCenter, pt.cEcho1, pt.cEcho2, pt.stroke, pt.blur);
@@ -504,27 +582,19 @@
 
         function playDrawingAnimation() {
             if (strokeHistory.length === 0) return;
-            
             let index = 0;
             const totalPoints = strokeHistory.length;
             const statusTxt = document.getElementById('status-text');
             
             function animateLoop() {
-                if (index === 0) {
-                    resetCanvasBackground(ctx, canvas.width, canvas.height);
-                }
-
+                if (index === 0) resetCanvasBackground(ctx, canvas.width, canvas.height);
                 let progress = index / totalPoints;
                 let stepSpeed = 1;
 
-                if (progress < 0.15 || progress > 0.85) {
-                    stepSpeed = Math.max(1, Math.floor(totalPoints * 0.008));
-                } else {
-                    stepSpeed = Math.max(2, Math.floor(totalPoints * 0.03));
-                }
+                if (progress < 0.15 || progress > 0.85) stepSpeed = Math.max(1, Math.floor(totalPoints * 0.008));
+                else stepSpeed = Math.max(2, Math.floor(totalPoints * 0.03));
 
                 const nextTarget = Math.min(index + stepSpeed, totalPoints);
-                
                 for (let i = index; i < nextTarget; i++) {
                     const pt = strokeHistory[i];
                     drawEchos(ctx, pt.x, pt.y, pt.shape, pt.size, pt.cCenter, pt.cEcho1, pt.cEcho2, pt.stroke, pt.blur);
@@ -533,27 +603,17 @@
                 index = nextTarget;
                 statusTxt.innerText = `Animating: ${Math.floor(progress * 100)}%`;
 
-                if (index < totalPoints) {
-                    requestAnimationFrame(animateLoop);
-                } else {
-                    statusTxt.innerText = `Animation Done`;
-                }
+                if (index < totalPoints) requestAnimationFrame(animateLoop);
+                else statusTxt.innerText = `Animation Done`;
             }
-            
             requestAnimationFrame(animateLoop);
         }
 
         function saveAsset() {
-            if (strokeHistory.length === 0) {
-                alert("Canvas is empty!");
-                return;
-            }
-
+            if (strokeHistory.length === 0) { alert("Canvas is empty!"); return; }
             const activeRatio = document.querySelector('input[name="aspect-ratio"]:checked').value;
-            const formatName = activeRatio.replace(':', 'x');
-
             const link = document.createElement('a');
-            link.download = `asset-master-${formatName}-${Date.now()}.png`;
+            link.download = `asset-master-${activeRatio.replace(':', 'x')}-${Date.now()}.png`;
             link.href = canvas.toDataURL('image/png');
             link.click();
         }
